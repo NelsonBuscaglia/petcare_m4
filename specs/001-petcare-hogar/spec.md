@@ -229,8 +229,9 @@ ese día, que aparece sin marca antes de la hora y "no cumplido" después.
 2. **Given** el alta de un baño o visita/estudio, **When** la fecha es anterior a hoy, **Then** se
    rechaza; si es hoy con hora pasada, se acepta y aparece "no cumplido" (AC-17b, AC-17c, AC-17d).
 3. **Given** el alta de una visita/estudio, **When** se elige el subtipo, **Then** las únicas
-   opciones son veterinario, estudio, vacuna e intervención médica, y el subtipo se muestra en el
-   estado del día (AC-18, AC-40).
+   opciones son veterinario, estudio, vacuna e intervención médica, el subtipo es obligatorio (sin
+   subtipo, el alta se rechaza con motivo) y se muestra en el estado del día (AC-18, AC-18b,
+   AC-40).
 4. **Given** una visita/estudio de hace 3 días sin cumplir, **When** se consulta hoy, **Then**
    aparece "no cumplido"; al registrar su cumplimiento, desaparece (AC-45, AC-46, AC-16).
 5. **Given** una mascota sin deberes, **When** se define y luego se modifica el máximo de días
@@ -437,7 +438,7 @@ historias anteriores.
 - **FR-010** (RF-08, RF-09, RF-09b): Al dar de alta un deber programable, el cuidador DEBE elegir
   "solo para hoy" o "todos los días"; para medicación diaria, además, "para siempre" o "hasta una
   fecha" inclusive, no anterior a hoy.
-- **FR-011** (RF-10, RF-10b, RF-10c, RF-11): El sistema DEBE permitir dar de alta deberes
+- **FR-011** (RF-10, RF-10b, RF-10c, RF-11, RF-11d): El sistema DEBE permitir dar de alta deberes
   puntuales (baño, visita/estudio) con fecha y hora exactas, sin recurrencia, rechazando fechas
   anteriores a hoy y aceptando hoy con hora pasada; las visitas/estudios DEBEN llevar subtipo
   veterinario, estudio, vacuna o intervención médica.
