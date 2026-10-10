@@ -1,50 +1,72 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# PetCare Hogar Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Test-First (NO NEGOCIABLE)
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Toda la lógica de la aplicación se desarrolla test-first:
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- Cada comportamiento nuevo o modificado DEBE arrancar con un test xUnit que lo describa y que
+  falle antes de escribir la implementación (ciclo Rojo → Verde → Refactor).
+- No se mergea lógica (reglas de dominio, vencimientos, generación de instancias, envío de
+  alarmas, autorización) sin tests que la cubran.
+- Los tests que dependen del tiempo DEBEN usar un `TimeProvider` controlable; nunca
+  `DateTime.Now`/`UtcNow`.
+- Un bug se corrige escribiendo primero el test que lo reproduce.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+**Rationale**: los vencimientos, cambios de día (UTC−3) y alarmas son la parte crítica del
+producto y solo son confiables si están fijados por tests escritos antes del código.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### II. Sin secretos en el código
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- Ninguna credencial (contraseñas SMTP, API keys, connection strings con secretos, claves de
+  cifrado) DEBE aparecer en el código fuente, en `appsettings*.json` ni en ningún archivo
+  versionado.
+- Las credenciales DEBEN leerse de variables de entorno o, en desarrollo local, de
+  user-secrets (`dotnet user-secrets`), que se guardan fuera del repositorio.
+- Si falta una credencial requerida, la app DEBE fallar con un mensaje claro, sin valores por
+  defecto que la reemplacen.
+- En desarrollo, los emails se escriben en la consola; no se envían emails reales.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+**Rationale**: el repositorio es compartido y su historial es permanente; un secreto
+commiteado debe considerarse filtrado.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### III. Alcance acotado al PRD vigente
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- Solo se implementan features respaldadas por un requerimiento (RF/RNF) del PRD vigente
+  (`PRD.md`). Toda spec, plan y tarea DEBE trazar a los requerimientos que cubre.
+- Lo listado en "Fuera de Alcance" del PRD NO DEBE implementarse.
+- Si se necesita algo que el PRD no cubre, primero se actualiza el PRD (skill `create-prd`) y
+  recién después se especifica e implementa.
+
+**Rationale**: evita crecimiento no acordado del producto y mantiene el PRD como única fuente
+de verdad sobre qué se construye.
+
+## Restricciones técnicas
+
+- Stack: .NET 10 LTS, C#, ASP.NET Core Razor Pages (sin Blazor), HTMX, SQLite + EF Core 10,
+  autenticación por cookie con `PasswordHasher<T>`, MailKit, xUnit.
+- Los cambios de esquema van exclusivamente por migraciones (`dotnet ef migrations add`); nada
+  de `EnsureCreated()`, `Migrate()` al arrancar ni borrar `petcare.db`.
+
+## Flujo de desarrollo
+
+- Las features siguen el flujo Spec Kit: `/speckit-specify` → `/speckit-plan` →
+  `/speckit-tasks` → `/speckit-implement`.
+- El "Constitution Check" de cada plan DEBE verificar los tres principios: tests antes que
+  implementación en `tasks.md`, ausencia de secretos y trazabilidad a requerimientos del PRD.
+- `dotnet test` DEBE pasar completo antes de cada commit a `main`.
+- Los commits siguen Conventional Commits.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- Esta constitución prevalece sobre cualquier otra práctica del proyecto. `AGENTS.md` contiene la
+  guía operativa del día a día y no puede contradecirla.
+- Enmiendas: se proponen con `/speckit-constitution`, documentando el cambio y su motivo, y se
+  commitean como cambio aislado.
+- Versionado semántico: MAJOR para quitar o redefinir principios; MINOR para agregar principios
+  o secciones, o ampliar materialmente una guía; PATCH para aclaraciones y redacción.
+- Toda revisión de código (PR/review) DEBE verificar el cumplimiento de los principios; un
+  desvío requiere justificación explícita en el plan (sección de complejidad) o se rechaza.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-10-10 | **Last Amended**: 2026-10-10
