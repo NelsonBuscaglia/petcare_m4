@@ -82,6 +82,7 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - RF-10b: El sistema debe rechazar el alta de un deber de tipo baño o visita/estudio con una fecha anterior al día actual.
 - RF-10c: El sistema debe permitir dar de alta un deber de tipo baño o visita/estudio para el día actual con una hora ya pasada.
 - RF-11: El sistema debe permitir elegir, al dar de alta un deber de tipo visita/estudio, un subtipo: veterinario, estudio, vacuna o intervención médica.
+- RF-11d: El sistema debe rechazar el alta de un deber de tipo visita/estudio sin subtipo (RF-11).
 - RF-11b: El sistema debe mostrar, en la configuración de deberes de cada mascota, sus deberes activos, cada uno con los datos con que fue dado de alta.
 - RF-11c: El sistema debe permitir dar de alta los deberes de una mascota (RF-06a, RF-10) desde su configuración de deberes.
 - RF-12a: El sistema debe permitir dar de baja un deber de cuidado desde la configuración de deberes de su mascota, en forma definitiva, sin posibilidad de reactivarlo.
@@ -225,6 +226,7 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - AC-17c (RF-10b): Dado el día de hoy, cuando un cuidador intenta dar de alta una visita/estudio con subtipo "veterinario" agendada para ayer, entonces el sistema rechaza el alta y el deber no aparece en la configuración de deberes.
 - AC-17d (RF-10c, RF-30a, RF-32b): Dado que hoy a las 10:30 un cuidador da de alta un baño agendado para hoy a las 10:00, cuando consulta el estado del día, entonces ve esa instancia marcada como "no cumplido" y, al llegar las 23:59, el sistema no envió ningún email de vencimiento para ella.
 - AC-18 (RF-11): Dado el alta de un deber de tipo visita/estudio, cuando un cuidador elige su subtipo, entonces las únicas opciones disponibles son veterinario, estudio, vacuna e intervención médica.
+- AC-18b (RF-11d, RF-36): Dado el alta de un deber de tipo visita/estudio, cuando un cuidador intenta guardarlo sin elegir subtipo, entonces el sistema rechaza el alta, le informa que debe elegir un subtipo, y el deber no aparece en la configuración de deberes.
 - AC-19b (RF-11b): Dada una mascota con un deber de baño agendado para dentro de 10 días a las 15:00 y un deber de "paseo cada 4 horas a partir de las 08:00, repetir todos los días", cuando un cuidador consulta la configuración de deberes de la mascota, entonces ve cada deber una sola vez: el baño con esa fecha y la hora 15:00, y el paseo con su modalidad "cada 4 horas a partir de las 08:00" y "repetir todos los días".
 - AC-19c (RF-11b): Dado un deber de "comida, hora fija 08:00, solo para hoy" dado de alta ayer y no cumplido, cuando hoy un cuidador consulta la configuración de deberes de la mascota, entonces ese deber no aparece.
 - AC-19d (RF-11b): Dado un deber de baño agendado para hoy a las 10:00 con su cumplimiento registrado, cuando un cuidador consulta la configuración de deberes de la mascota, entonces ese deber no aparece.
