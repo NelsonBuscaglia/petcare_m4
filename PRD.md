@@ -53,6 +53,7 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - RF-01c: Cuando el hogar ya existe, el sistema debe asociar a la nueva persona al hogar solo si al registrarse ingresa el código de hogar correcto.
 - RF-02: El sistema debe permitir que un cuidador registrado inicie sesión con su email y contraseña, comparando el email sin distinguir mayúsculas de minúsculas.
 - RF-02b: El sistema debe permitir que un cuidador con sesión iniciada cierre su sesión.
+- RF-02c: El sistema debe cerrar la sesión de un cuidador cuando pasan 30 días desde la última solicitud que hizo con esa sesión, sin contar las solicitudes de actualización automática del estado del día (RF-31).
 - RF-03: El sistema debe impedir que una persona sin sesión iniciada vea los datos del hogar (mascotas, deberes y registros de cumplimiento de cuidado).
 - RF-03b: El sistema debe impedir que una persona sin sesión iniciada modifique los datos del hogar (mascotas, deberes y registros de cumplimiento de cuidado).
 
@@ -97,12 +98,16 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - RF-14: El sistema debe permitir dar de baja, desde el estado del día, cualquier instancia vigente.
 - RF-14b: Al dar de baja la instancia de un deber que tiene una única instancia (baño, visita/estudio, o comida, paseo o medicación de hora fija "solo para hoy"), el sistema debe dar de baja también el deber (RF-12a).
 - RF-14c: Al dar de baja una instancia de un deber distinto de los mencionados en RF-14b, el sistema debe conservar el deber y sus demás instancias.
+- RF-14d: El sistema debe rechazar la baja de una instancia que ya tiene su cumplimiento registrado o que ya fue dada de baja, sin modificarla.
+- RF-14e: Al rechazar una baja según RF-14d, el sistema debe informar al cuidador si la instancia ya fue cumplida o ya fue dada de baja.
 
 ### Registro de cumplimiento
 
 - RF-21: El sistema debe permitir registrar, desde el estado del día de una mascota, el cumplimiento de cualquiera de sus instancias vigentes.
 - RF-21b: El sistema debe rechazar el registro de cumplimiento de una instancia que ya tiene su cumplimiento registrado, sin crear un segundo registro.
 - RF-21c: Al rechazar un registro según RF-21b, el sistema debe informar al cuidador que la instancia ya fue cumplida.
+- RF-21d: El sistema debe rechazar el registro de cumplimiento de una instancia que ya fue dada de baja, sin crear el registro.
+- RF-21e: Al rechazar un registro según RF-21d, el sistema debe informar al cuidador que la instancia ya fue dada de baja.
 - RF-23: Al registrar el cumplimiento de una instancia de un deber de tipo comida, paseo o medicación, el sistema debe pedir la hora real de cumplimiento, mostrando la hora actual como valor por defecto y permitiendo editarla.
 - RF-23b: El sistema debe rechazar una hora real de cumplimiento (RF-23) posterior a la hora actual.
 - RF-24: Al registrar el cumplimiento de una instancia de un deber de tipo baño o visita/estudio, el sistema debe guardar solo la fecha, sin pedir hora.
@@ -127,10 +132,12 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - RF-34: El sistema debe enviar a todos los cuidadores del hogar un único email recordatorio 48 horas antes de la fecha y hora agendadas de un deber de tipo baño o visita/estudio, siempre que el deber se haya dado de alta con al menos 48 horas de anticipación y no se haya dado de baja antes.
 - RF-28d: El sistema debe incluir el subtipo de un deber de tipo visita/estudio en el email recordatorio de ese deber (RF-34).
 - RF-35: El sistema debe enviar todos los días a las 07:00, por cada mascota que en ese momento cumpla estas tres condiciones a la vez, un email de aviso de turno de baño a todos los cuidadores del hogar, indicando que debe solicitarse turno de baño para esa mascota: (a) la mascota tiene definido un máximo de días entre baños (RF-05); (b) transcurrieron más días que ese máximo desde el último baño registrado o, si no hay ninguno, desde el alta de la mascota; y (c) no existe ningún deber de baño activo para esa mascota.
+- RF-32c: Cuando el servicio de envío de emails rechaza o no responde un email de vencimiento, recordatorio o aviso de turno de baño (RF-32, RF-33, RF-34, RF-35), el sistema debe reintentar su envío hasta que el servicio lo acepte o hasta que pasen 5 minutos desde que se cumplió la condición que lo dispara (RNF-01).
+- RF-32d: El sistema debe considerar enviado un email de vencimiento, recordatorio o aviso de turno de baño solo cuando el servicio de envío de emails lo aceptó.
 
 ## Requerimientos No Funcionales
 
-- RNF-01: El sistema debe entregar al servicio de envío de emails cualquier email de alarma o recordatorio (vencimiento, recordatorio de 48 horas antes, o aviso de turno de baño) dentro de los 5 minutos posteriores a que se cumpla la condición que lo dispara, incluida su detección, sin depender de que haya cuidadores con la aplicación abierta, en todos los casos, mientras el servidor esté en ejecución. La demora del servicio de email en llegar al destinatario queda fuera de esta medición.
+- RNF-01: El sistema debe entregar al servicio de envío de emails cualquier email de alarma o recordatorio (vencimiento, recordatorio de 48 horas antes, o aviso de turno de baño) dentro de los 5 minutos posteriores a que se cumpla la condición que lo dispara, incluida su detección, sin depender de que haya cuidadores con la aplicación abierta, en todos los casos, mientras el servidor esté en ejecución, salvo que el servicio de envío de emails rechace o no responda durante toda esa ventana (RF-32c). La demora del servicio de email en llegar al destinatario queda fuera de esta medición.
 - RNF-02: La interfaz debe poder usarse completa desde un navegador móvil con un viewport de 360 píxeles de ancho o más: sin scroll horizontal y con todas las funciones disponibles, sin requerir instalación de una app.
 - RNF-03: Registrar el cumplimiento de una instancia debe requerir 5 toques/clics o menos, contados desde la pantalla principal (el estado del día) hasta la confirmación del registro inclusive, aceptando la hora por defecto que propone el sistema (RF-23).
 - RNF-04: La actualización automática del estado del día descrita en RF-31 debe reflejarse en los cuidadores con la aplicación abierta dentro de los 15 segundos posteriores al cambio que la origina, en todos los casos, mientras el servidor esté en ejecución.
@@ -151,6 +158,9 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - AC-03 (RF-02): Dado un cuidador registrado con email y contraseña, cuando inicia sesión con esos mismos datos, entonces ve el estado del día.
 - AC-03b (RF-02): Dado un cuidador registrado con el email ana@ejemplo.com, cuando inicia sesión con el email Ana@Ejemplo.com y su contraseña, entonces ve el estado del día.
 - AC-04 (RF-02): Dado un cuidador registrado, cuando intenta iniciar sesión con una contraseña incorrecta, entonces el sistema rechaza el inicio de sesión y no muestra ningún dato del hogar.
+- AC-04c (RF-02c): Dado un cuidador que hizo su última solicitud con su sesión el día 1 a las 10:00, cuando el día 31 a las 10:01 intenta ver el estado del día desde ese mismo navegador, entonces el sistema lo rechaza sin mostrar ningún dato y le pide iniciar sesión.
+- AC-04d (RF-02c): Dado un cuidador que inició sesión el día 1 y consultó el estado del día el día 20 a las 10:00, cuando el día 45 a las 10:00 consulta el estado del día desde ese mismo navegador, entonces lo ve sin volver a iniciar sesión.
+- AC-04e (RF-02c, RF-31): Dado un cuidador que hizo su última solicitud el día 1 a las 10:00 y dejó abierto el estado del día desde entonces, cuando el día 31 a las 10:01 la pantalla envía su solicitud de actualización automática, entonces el sistema la rechaza sin devolver ningún dato.
 - AC-04b (RF-02b): Dado un cuidador con sesión iniciada, cuando cierra su sesión, entonces cualquier intento posterior de ver el estado de una mascota desde ese mismo navegador es rechazado sin mostrar ningún dato, hasta que vuelva a iniciar sesión.
 - AC-05 (RF-03): Dada una persona sin sesión iniciada, cuando envía una solicitud para ver el estado de una mascota del hogar, incluida la solicitud de actualización automática (RF-31), entonces el sistema le niega el acceso y no devuelve ningún dato.
 - AC-05c (RF-03): Dada una persona sin sesión iniciada, cuando envía una solicitud para ver la configuración de deberes de una mascota del hogar, entonces el sistema le niega el acceso y no devuelve ningún dato.
@@ -224,6 +234,9 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 
 - AC-32 (RF-21): Dada una mascota con una instancia vigente de un deber de paseo, cuando un cuidador registra su cumplimiento desde el estado del día de la mascota, entonces esa instancia deja de aparecer en el estado del día y la cantidad de paseos realizados de la mascota aumenta en 1.
 - AC-32b (RF-21b, RF-21c): Dados dos cuidadores con el estado del día abierto mostrando la misma instancia vigente de paseo de la mascota A, cuando el cuidador 1 registra su cumplimiento y, antes de que la pantalla del cuidador 2 se actualice, el cuidador 2 registra el cumplimiento de esa misma instancia, entonces el sistema rechaza el registro del cuidador 2, le informa que la instancia ya fue cumplida, y la cantidad de paseos realizados de la mascota A aumentó solo en 1.
+- AC-32c (RF-21d, RF-21e): Dados dos cuidadores con el estado del día abierto mostrando la misma instancia vigente de paseo de la mascota A, cuando el cuidador 1 da de baja esa instancia y, antes de que la pantalla del cuidador 2 se actualice, el cuidador 2 registra su cumplimiento, entonces el sistema rechaza el registro del cuidador 2, le informa que la instancia ya fue dada de baja, y la cantidad de paseos realizados de la mascota A no cambia.
+- AC-32d (RF-14d, RF-14e): Dados dos cuidadores con el estado del día abierto mostrando la misma instancia vigente de paseo de la mascota A, cuando el cuidador 1 registra su cumplimiento y, antes de que la pantalla del cuidador 2 se actualice, el cuidador 2 da de baja esa instancia, entonces el sistema rechaza la baja del cuidador 2, le informa que la instancia ya fue cumplida, y la cantidad de paseos realizados de la mascota A aumentó en 1.
+- AC-32e (RF-14d, RF-14e): Dados dos cuidadores con el estado del día abierto mostrando la misma instancia vigente de paseo de la mascota A, cuando el cuidador 1 da de baja esa instancia y, antes de que la pantalla del cuidador 2 se actualice, el cuidador 2 también la da de baja, entonces el sistema rechaza la baja del cuidador 2 y le informa que la instancia ya fue dada de baja.
 - AC-33b (RF-21): Dado el escenario del AC-33, cuando a las 12:00 un cuidador registra el cumplimiento de la instancia de baño, entonces esa instancia deja de aparecer en el estado del día y la del paseo sigue apareciendo.
 - AC-35 (RF-23): Dada una instancia vigente de un deber de comida, cuando un cuidador registra su cumplimiento a las 10:30 aceptando la hora que propone el sistema, entonces el estado del día de la mascota muestra la última comida con la fecha de hoy y la hora 10:30.
 - AC-35b (RF-23): Dada una instancia vigente de un deber de comida, cuando un cuidador registra su cumplimiento a las 10:30 y cambia la hora propuesta a 10:00, entonces el estado del día de la mascota muestra la última comida con la fecha de hoy y la hora 10:00.
@@ -269,6 +282,9 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - AC-53d (RF-35): Dada una mascota con un máximo de 20 días entre baños, cuyo último baño registrado fue hace exactamente 20 días, y sin ningún deber de baño activo, cuando llegan las 23:59 de hoy, entonces el sistema no envió en el día ningún email de aviso de turno de baño para esa mascota.
 - AC-55 (RF-35): Dada una mascota sin máximo de días entre baños definido, cuyo último baño registrado fue hace 60 días, y sin ningún deber de baño activo, cuando llegan las 23:59 de hoy, entonces el sistema no envió en el día ningún email de aviso de turno de baño para esa mascota.
 - AC-56 (RF-35): Dada una mascota con un máximo de 20 días entre baños, dada de alta hace 25 días, sin ningún baño registrado y sin ningún deber de baño activo, cuando llegan las 23:59 de hoy, entonces el sistema envió en el día a todos los cuidadores del hogar exactamente un email de aviso de turno de baño para esa mascota.
+- AC-62 (RF-32c, RNF-01): Dado un deber de "medicación, hora fija 09:00" sin cumplimiento registrado y el servicio de envío de emails rechazando todo envío entre las 09:15 y las 09:17, cuando el servicio vuelve a aceptar envíos a las 09:17, entonces el servicio recibe y acepta el email de vencimiento de esa instancia a más tardar a las 09:20.
+- AC-62b (RF-32c): Dado un deber de "medicación, hora fija 09:00" sin cumplimiento registrado y el servicio de envío de emails rechazando todo envío entre las 09:15 y las 09:30, cuando llegan las 23:59, entonces el sistema no intentó enviar el email de vencimiento de esa instancia después de las 09:20.
+- AC-62c (RF-32d, RF-32): Dado el escenario del AC-62b, cuando a las 10:00 un cuidador registra por error el cumplimiento de esa instancia y a las 10:30 lo elimina, entonces el sistema envía el email de vencimiento para esa instancia a más tardar a las 10:35.
 - AC-58 (RF-35): Dado el escenario del AC-53 y que ayer se envió el email de aviso de turno de baño, sin que desde entonces se haya registrado ni agendado un baño, cuando llegan las 23:59 de hoy, entonces el sistema envió en el día exactamente un email de aviso de turno de baño para esa mascota.
 
 ### Requerimientos no funcionales
@@ -304,6 +320,7 @@ Lo siguiente no forma parte de esta versión. Su inclusión no implica que esté
 - Bloqueo o demora tras intentos fallidos de inicio de sesión.
 - Uso sin conexión o instalación como PWA (la app requiere conexión).
 - Registrar un cumplimiento que no corresponde a ninguna instancia. Para registrar una tarea no agendada, el cuidador da de alta el deber correspondiente (por ejemplo, "paseo, hora fija, solo para hoy", o un baño o visita/estudio puntual) y registra el cumplimiento de su instancia.
+- Enviar un email cuyos reintentos no lograron que el servicio de envío lo aceptara dentro de los 5 minutos posteriores a su condición de disparo (ese email se pierde; RF-32c).
 - Enviar, al volver a estar en ejecución el servidor, los emails cuya condición de disparo se cumplió mientras estaba caído (esos emails se pierden; RNF-01).
 
 ## Riesgos y Dependencias
