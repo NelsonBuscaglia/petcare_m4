@@ -325,14 +325,14 @@ Lo siguiente no forma parte de esta versión. Su inclusión no implica que esté
 
 ## Riesgos y Dependencias
 
-- Riesgo: el envío de email falla o llega tarde y el cuidador deja de confiar en la alarma → mitigación: la instancia de deber igual se muestra como "pendiente" o "no cumplido" en la interfaz (RF-29, RF-30a, RF-30b) aunque el email falle.
+- Riesgo: el envío de email falla o llega tarde y el cuidador deja de confiar en la alarma → mitigación: el sistema reintenta el envío durante los 5 minutos posteriores a la condición de disparo (RF-32c), y la instancia de deber igual se muestra como "pendiente" o "no cumplido" en la interfaz (RF-29, RF-30a, RF-30b) aunque el email no llegue a enviarse.
 - Riesgo: el código de hogar se filtra y una persona ajena se suma al hogar → se acepta como limitación conocida para el alcance de este ejercicio (no hay aprobación de altas, ver Fuera de Alcance).
 - Riesgo: dar de baja el deber completo cuando se quería dar de baja solo una instancia corta las alarmas sin que se note de inmediato → mitigación: la baja de un deber y la de una instancia se hacen desde vistas distintas (configuración de deberes y estado del día).
 - Riesgo: sin fecha de fin en un tratamiento de medicación, el sistema alertaría indefinidamente después de terminado → mitigación: opción "hasta fecha" en la configuración de medicación recurrente (RF-09, AC-13).
 - Riesgo: el polling entre cuidadores genera carga innecesaria en el servidor → mitigación: un intervalo de 15 s es aceptable para el volumen de un solo hogar; no está pensado para escalar a muchos hogares simultáneos.
 - Riesgo: si el servidor está caído no se generan instancias ni se envían alarmas → mitigación: al volver se generan las instancias del día que falten (RF-17c) y la interfaz igual muestra "pendiente" o "no cumplido" (RF-29, RF-30a).
 - Dependencia: servicio de envío de emails.
-- Dependencia: mecanismo de autenticación por email y contraseña, con generación y validación del código de hogar (RF-01a a RF-01g, RF-02, RF-02b, RF-03, RF-03b).
-- Dependencia: proceso programado (job/cron/scheduler) que genere instancias diarias, revise vencimientos y recordatorios, y evalúe el aviso de turno de baño, independientemente de que haya cuidadores con la aplicación abierta (RF-17, RF-32 a RF-35, RNF-01, RNF-05).
+- Dependencia: mecanismo de autenticación por email y contraseña, con generación y validación del código de hogar (RF-01a a RF-01g, RF-02, RF-02b, RF-02c, RF-03, RF-03b).
+- Dependencia: proceso programado (job/cron/scheduler) que genere instancias diarias, revise vencimientos y recordatorios, evalúe el aviso de turno de baño y reintente los emails que el servicio de envío no aceptó, independientemente de que haya cuidadores con la aplicación abierta (RF-17, RF-32, RF-32b, RF-32c, RF-32d, RF-33, RF-34, RF-35, RNF-01, RNF-05).
 - Dependencia: mecanismo de refresco en el cliente (polling) para reflejar en pantalla los cambios realizados por otros cuidadores y los vencimientos de instancias (RF-31, RNF-04).
-- Dependencia: SQLite (o motor equivalente) para persistir hogares, cuidadores, mascotas, deberes (con su modalidad, subtipo si aplica, y referencia a su regla de origen cuando son recurrentes) y registros de cumplimiento de cuidado.
+- Dependencia: SQLite (o motor equivalente) para persistir hogares, cuidadores, mascotas, deberes (con su modalidad, subtipo si aplica, y referencia a su regla de origen cuando son recurrentes) y registros de cumplimiento de cuidado, y los emails de vencimiento, recordatorio y aviso de turno de baño que el servicio de envío aceptó (RF-32, RF-32d, RF-34, RF-35).
