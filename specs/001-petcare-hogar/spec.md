@@ -12,6 +12,22 @@
 del PRD que cubre, y cada escenario de aceptación el AC del PRD del que proviene. Los términos
 en *cursiva* se definen en el Glosario del PRD, que se aplica tal cual a este spec.
 
+## Clarifications
+
+### Session 2026-10-10
+
+- Q: Si el servicio de email falla al mandar una alarma, ¿el sistema reintenta? → A: Reintenta
+  hasta lograr la entrega o hasta que pasen los 5 minutos del RNF-01; se considera enviado solo
+  si el servicio lo aceptó.
+- Q: Si un cuidador da de baja una instancia y otro registra su cumplimiento casi a la vez,
+  ¿qué pasa? → A: Gana la primera operación que llega; la segunda se rechaza informando el
+  motivo ("ya fue dada de baja" o "ya fue cumplida").
+- Q: ¿Cuánto dura la sesión de un cuidador antes de pedirle que vuelva a iniciarla? → A: Vence
+  tras 30 días sin uso; cada uso renueva el plazo.
+- Las tres respuestas se incorporaron a `PRD.md` (RF-02c, RF-14d, RF-14e, RF-21d, RF-21e,
+  RF-32c, RF-32d; AC-04c a AC-04e, AC-32c a AC-32e, AC-62 a AC-62c). Al hacerlo se precisó que
+  la actualización automática del estado del día no renueva la sesión.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Sumarse al hogar compartido (Priority: P1)
@@ -45,6 +61,10 @@ verificar que sin sesión toda consulta o modificación es rechazada.
    datos ni aplicar cambios (AC-04b, AC-05 a AC-05j).
 7. **Given** un segundo cuidador con sesión, **When** consulta el código de hogar, **Then** ve el
    mismo código que se mostró a la primera persona (AC-01b).
+8. **Given** un cuidador cuya última solicitud fue hace más de 30 días, **When** intenta ver el
+   estado del día, **Then** se le pide iniciar sesión sin mostrar datos; si usó la aplicación en
+   ese lapso, la sesión sigue vigente; los refrescos automáticos de una pantalla abierta no la
+   renuevan (AC-04c, AC-04d, AC-04e).
 
 ---
 
@@ -109,18 +129,22 @@ y verificar que la instancia vuelve.
 2. **Given** dos cuidadores viendo la misma instancia, **When** ambos registran su cumplimiento,
    **Then** el segundo es rechazado con aviso de que ya fue cumplida y se cuenta un solo paseo
    (AC-32b).
-3. **Given** una instancia vigente de comida, **When** se registra a las 10:30 aceptando la hora
+3. **Given** dos cuidadores viendo la misma instancia, **When** uno la da de baja y el otro,
+   antes de ver el cambio, registra su cumplimiento o también la da de baja (o a la inversa),
+   **Then** se aplica la primera operación y la segunda se rechaza informando si la instancia ya
+   fue dada de baja o ya fue cumplida (AC-32c, AC-32d, AC-32e).
+4. **Given** una instancia vigente de comida, **When** se registra a las 10:30 aceptando la hora
    propuesta o cambiándola a 10:00, **Then** la última comida muestra hoy con esa hora; una hora
    posterior a la actual (11:00) se rechaza (AC-35, AC-35b, AC-35c).
-4. **Given** una instancia vigente de baño, **When** se registra su cumplimiento, **Then** no se
+5. **Given** una instancia vigente de baño, **When** se registra su cumplimiento, **Then** no se
    pide hora (AC-36).
-5. **Given** un registro de hoy cargado por error, **When** se elimina, **Then** la instancia
+6. **Given** un registro de hoy cargado por error, **When** se elimina, **Then** la instancia
    vuelve a estar vigente (con su marca si corresponde) y los contadores se ajustan; eliminar un
    registro de ayer se rechaza (AC-37, AC-37b, AC-38).
-6. **Given** una mascota con cumplimientos de días anteriores o sin ninguno, **When** se consulta
+7. **Given** una mascota con cumplimientos de días anteriores o sin ninguno, **When** se consulta
    el estado del día, **Then** se ven la fecha y hora de la última comida y del último paseo, o
    que no hay ninguno (AC-39, AC-39c, AC-39d).
-7. **Given** una instancia vigente de paseo, **When** se registra su cumplimiento aceptando la
+8. **Given** una instancia vigente de paseo, **When** se registra su cumplimiento aceptando la
    hora por defecto, **Then** se completa en 5 toques/clics o menos desde la pantalla principal
    (AC-60).
 
@@ -267,6 +291,10 @@ en su momento, una sola vez, y su ausencia en los casos excluidos.
    48 horas, **Then** se envía exactamente un recordatorio (con subtipo si aplica) a más tardar 5
    minutos después; no se envía si se agendó con menos anticipación o se dio de baja antes
    (AC-51, AC-51b, AC-51c, AC-52, AC-52b, AC-42).
+6. **Given** que el servicio de email rechaza envíos, **When** vuelve a aceptarlos dentro de los 5
+   minutos posteriores a la condición, **Then** el email se entrega; si sigue rechazando toda la
+   ventana, el email se pierde sin más reintentos, y se envía si la instancia vuelve a vencer
+   tras eliminar un cumplimiento (AC-62, AC-62b, AC-62c).
 
 ---
 
@@ -310,6 +338,10 @@ historias anteriores.
   instancia sigue "pendiente" después de la fecha de fin, sin generar nuevas (AC-13c, AC-19e).
 - Se elimina un registro de cumplimiento de una instancia que ya había generado email de
   vencimiento: no se envía un segundo email (FR-036).
+- Un cuidador da de baja una instancia mientras otro registra su cumplimiento: se aplica la
+  primera operación y la segunda se rechaza informando el motivo (FR-045).
+- El servicio de email falla: se reintenta hasta 5 minutos desde la condición; si no se logra,
+  ese email se pierde y la instancia sigue marcada en pantalla (FR-041).
 - Se da de baja la instancia de un deber de instancia única: se da de baja también el deber
   (FR-016).
 - Se intenta eliminar un registro de cumplimiento de un día anterior: se rechaza (FR-032).
@@ -330,8 +362,10 @@ historias anteriores.
 - **FR-003** (RF-01f): El sistema DEBE rechazar el registro con un email que ya pertenece a un
   cuidador, comparando sin distinguir mayúsculas de minúsculas.
 - **FR-004** (RF-01g): Un cuidador con sesión iniciada DEBE poder consultar el código de hogar.
-- **FR-005** (RF-02, RF-02b): Un cuidador DEBE poder iniciar sesión con email (sin distinguir
-  mayúsculas) y contraseña, y cerrar su sesión.
+- **FR-005** (RF-02, RF-02b, RF-02c): Un cuidador DEBE poder iniciar sesión con email (sin distinguir
+  mayúsculas) y contraseña, y cerrar su sesión. La sesión DEBE vencer tras 30 días sin uso, y
+  cada uso DEBE renovar ese plazo; vencida, el cuidador DEBE volver a iniciar sesión. Las
+  actualizaciones automáticas del estado del día (FR-035) no cuentan como uso.
 - **FR-006** (RF-03, RF-03b): El sistema DEBE impedir que una persona sin sesión iniciada vea o
   modifique cualquier dato del hogar (mascotas, deberes, instancias, registros de cumplimiento,
   máximo de días entre baños, código de hogar), incluidas las actualizaciones automáticas.
@@ -402,6 +436,10 @@ historias anteriores.
   crear un segundo registro, aun cuando dos cuidadores lo intenten a la vez.
 - **FR-029** (RF-21c): Al rechazar según FR-028, el sistema DEBE informar al cuidador que la
   instancia ya fue cumplida.
+- **FR-045** (RF-14d, RF-14e, RF-21d, RF-21e): El sistema DEBE rechazar el registro de cumplimiento o la baja de
+  una instancia que ya no está vigente (porque otro cuidador la cumplió o la dio de baja, o se
+  dio de baja su deber), sin modificarla, e informar el motivo ("ya fue cumplida" o "ya fue
+  dada de baja"). Ante operaciones simultáneas sobre la misma instancia, se aplica la primera.
 - **FR-030** (RF-25, RF-26): El sistema DEBE permitir eliminar un registro de cumplimiento del
   día actual, dejando nuevamente vigente la instancia sin afectar al deber.
 - **FR-031** (Fuera de Alcance del PRD): El sistema NO DEBE permitir editar un registro de
@@ -439,9 +477,11 @@ historias anteriores.
   email de aviso de turno de baño por cada mascota que tenga máximo de días entre baños definido,
   haya superado ese máximo desde el último baño registrado (o desde su alta si no hay ninguno) y
   no tenga ningún deber de baño activo.
-- **FR-041** (RNF-01): Todo email de vencimiento, recordatorio o aviso de turno de baño DEBE
+- **FR-041** (RNF-01, RF-32c, RF-32d): Todo email de vencimiento, recordatorio o aviso de turno de baño DEBE
   entregarse al servicio de envío dentro de los 5 minutos posteriores a que se cumpla su
-  condición, mientras el sistema esté en ejecución.
+  condición, mientras el sistema esté en ejecución. Si el servicio rechaza o no responde, el
+  sistema DEBE reintentar dentro de esa ventana de 5 minutos y dejar de reintentar al vencerla;
+  un email cuenta como enviado (FR-036, FR-038) solo si el servicio lo aceptó.
 
 **Generales**
 
@@ -467,8 +507,8 @@ historias anteriores.
   expirada o dada de baja; se marca vencida ("pendiente" o "no cumplido") según su tipo.
 - **Registro de cumplimiento**: constancia única de que una instancia se cumplió; guarda fecha y,
   para comida, paseo y medicación, la hora real.
-- **Constancia de email enviado**: registro de cada email de vencimiento, recordatorio o aviso de turno de
-  baño, necesaria para no repetir envíos.
+- **Constancia de email enviado**: registro de cada email de vencimiento, recordatorio o aviso
+  de turno de baño que el servicio de envío aceptó; necesaria para no repetir envíos.
 
 ## Success Criteria *(mandatory)*
 
@@ -476,7 +516,8 @@ historias anteriores.
 
 - **SC-001**: El 100% de los emails de vencimiento, recordatorio y aviso de turno de baño se
   entregan al servicio de envío en 5 minutos o menos desde que se cumple su condición, sin
-  ningún cuidador conectado (RNF-01).
+  ningún cuidador conectado, salvo que el servicio rechace o no responda durante toda esa
+  ventana (RNF-01).
 - **SC-002**: Un cambio hecho por un cuidador se ve en la pantalla de otro cuidador con la
   aplicación abierta en 15 segundos o menos, en el 100% de los casos (RNF-04).
 - **SC-003**: Registrar un cumplimiento con la hora propuesta lleva 5 toques/clics o menos desde
@@ -497,7 +538,8 @@ historias anteriores.
   de `PRD.md`; los escenarios de este spec los agrupan por historia y citan su identificador.
 - Lo listado en "Fuera de Alcance" del PRD queda excluido de este spec (Principio III de la
   constitución), incluidos: múltiples hogares, roles, recuperación de contraseña, edición de
-  deberes, mascotas o registros, historial, y reenvío de emails perdidos durante caídas.
+  deberes, mascotas o registros, historial, reenvío de emails perdidos durante caídas, y
+  reenvío de emails que el servicio no aceptó tras 5 minutos de reintentos.
 - Los días entre baños (FR-040) se cuentan como días calendario en UTC−3: con máximo 20, el
   aviso corresponde a partir del día 21 desde el último baño (AC-53d).
 - El "último baño registrado" es el último registro de cumplimiento de un deber de baño de esa
