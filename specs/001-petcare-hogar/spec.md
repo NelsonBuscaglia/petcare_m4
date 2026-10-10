@@ -171,8 +171,9 @@ la expiración de comida/paseo al cambio de día y el arrastre de la medicación
    aparecen la de ayer "pendiente" y la de hoy sin marca; cumplir la de ayer no afecta la de hoy
    (AC-31, AC-31b, AC-13c).
 4. **Given** el cambio de día en UTC−3, **When** se consulta a las 00:05 y a las 23:59 (UTC−3),
-   **Then** las instancias del nuevo día aparecen recién después de las 00:00 UTC−3 (AC-28,
-   AC-28b, AC-61).
+   **Then** las instancias del nuevo día aparecen recién después de las 00:00 UTC−3, y los
+   vencimientos se evalúan en hora UTC−3: a las 05:15 UTC−3 (08:15 UTC) una comida de las 08:00
+   no está "pendiente" (AC-28, AC-28b, AC-61).
 5. **Given** el servidor caído entre las 23:00 de ayer y las 10:00 de hoy, **When** vuelve a
    funcionar, **Then** se generan las instancias faltantes de hoy, ya marcadas como "pendiente"
    si corresponde (AC-28c).
@@ -366,7 +367,7 @@ historias anteriores.
   mayúsculas) y contraseña, y cerrar su sesión. La sesión DEBE vencer tras 30 días sin uso, y
   cada uso DEBE renovar ese plazo; vencida, el cuidador DEBE volver a iniciar sesión. Las
   actualizaciones automáticas del estado del día (FR-035) no cuentan como uso.
-- **FR-006** (RF-03, RF-03b): El sistema DEBE impedir que una persona sin sesión iniciada vea o
+- **FR-006** (RF-03, RF-03b, RF-01g): El sistema DEBE impedir que una persona sin sesión iniciada vea o
   modifique cualquier dato del hogar (mascotas, deberes, instancias, registros de cumplimiento,
   máximo de días entre baños, código de hogar), incluidas las actualizaciones automáticas.
 
@@ -481,7 +482,7 @@ historias anteriores.
   entregarse al servicio de envío dentro de los 5 minutos posteriores a que se cumpla su
   condición, mientras el sistema esté en ejecución. Si el servicio rechaza o no responde, el
   sistema DEBE reintentar dentro de esa ventana de 5 minutos y dejar de reintentar al vencerla;
-  un email cuenta como enviado (FR-036, FR-038) solo si el servicio lo aceptó.
+  un email cuenta como enviado (FR-036, FR-038, FR-040) solo si el servicio lo aceptó.
 
 **Generales**
 
@@ -529,8 +530,8 @@ historias anteriores.
 - **SC-006**: Ninguna instancia queda con más de un registro de cumplimiento ni recibe más de un
   email de vencimiento, aun con registros simultáneos de varios cuidadores.
 - **SC-007**: Un cuidador puede saber qué falta hacer hoy para cada mascota solo mirando el estado
-  del día, sin preguntar a otro integrante del hogar: todos los criterios de aceptación del PRD
-  (AC-01 a AC-61) se verifican.
+  del día, sin preguntar a otro integrante del hogar: todos los criterios de aceptación de la
+  sección "Criterios de Aceptación" de `PRD.md` se verifican.
 
 ## Assumptions
 
@@ -549,4 +550,5 @@ historias anteriores.
 - Volumen esperado: un único hogar con pocos cuidadores y mascotas; no se requiere escalar a
   muchos hogares (Riesgos del PRD).
 - Dependencias: un servicio de envío de emails y un proceso programado que funcione sin usuarios
-  conectados para generar instancias y disparar emails (Riesgos y Dependencias del PRD).
+  conectados para generar instancias, disparar emails y reintentar los que el servicio de envío
+  no aceptó (Riesgos y Dependencias del PRD).
