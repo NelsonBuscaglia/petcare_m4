@@ -328,7 +328,7 @@ tardar a las 07:05; ninguno en los casos excluidos.
 
 - [X] T095 [P] Revisar `src/PetCare.Web/wwwroot/css/site.css` y todas las vistas en 360 px de ancho: los 15 flujos de AC-59 sin scroll horizontal (FR-042, SC-004)
 - [X] T096 [P] Verificar las comprobaciones de la constitución de quickstart.md: sin `DateTime.Now`/`UtcNow` ni `EnsureCreated()`/`Migrate()` en `src/`, sin credenciales en `*.json`
-- [ ] T097 Correr `dotnet test` completo y la validación manual de `specs/001-petcare-hogar/quickstart.md`; todo en verde antes de commitear a `main`
+- [X] T097 Correr `dotnet test` completo y la validación manual de `specs/001-petcare-hogar/quickstart.md`; todo en verde antes de commitear a `main`
 
 ---
 
