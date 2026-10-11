@@ -2,9 +2,11 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.WebEncoders;
 using PetCare.Web.Datos;
 using PetCare.Web.Dominio;
+using PetCare.Web.Email;
 using PetCare.Web.Infra;
 using PetCare.Web.Programado;
 using PetCare.Web.Servicios;
@@ -25,7 +27,26 @@ builder.Services.AddScoped<CumplimientosService>();
 builder.Services.AddScoped<BajasInstanciaService>();
 builder.Services.AddScoped<EstadoDelDiaQuery>();
 
-// Procesador en segundo plano: genera instancias sin depender de usuarios conectados (R5).
+// Emails: en desarrollo se escriben en la consola; en los demás entornos se envían por SMTP con
+// la configuración de variables de entorno (Smtp__Host, …) o user-secrets, nunca de
+// appsettings*.json. Si falta, la app no arranca e informa qué falta (Principio II, R7).
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSingleton<IEmailSender, ConsoleEmailSender>();
+}
+else
+{
+    builder.Configuration.AddUserSecrets<Program>(optional: true);
+    builder.Services.AddOptions<SmtpOptions>()
+        .Bind(builder.Configuration.GetSection(SmtpOptions.Seccion))
+        .ValidateOnStart();
+    builder.Services.AddSingleton<IValidateOptions<SmtpOptions>, ValidacionSmtpOptions>();
+    builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
+}
+
+builder.Services.AddScoped<NotificacionesService>();
+
+// Procesador en segundo plano: genera instancias y envía emails sin depender de usuarios conectados (R5).
 builder.Services.AddScoped<ProcesadorProgramado>();
 builder.Services.AddHostedService<ProgramadorHostedService>();
 

@@ -4,6 +4,7 @@ using PetCare.Tests.Infra;
 using PetCare.Web.Dominio;
 using PetCare.Web.Dominio.Entidades;
 using PetCare.Web.Programado;
+using PetCare.Web.Servicios;
 
 namespace PetCare.Tests.Programado;
 
@@ -28,7 +29,9 @@ public class GeneracionDiariaTests : IDisposable
     private async Task Ciclo()
     {
         await using var db = _base.Contexto();
-        await new ProcesadorProgramado(db, _base.Reloj, NullLogger<ProcesadorProgramado>.Instance)
+        var notificaciones = new NotificacionesService(
+            db, _base.Reloj, new FakeEmailSender(_base.Tiempo), NullLogger<NotificacionesService>.Instance);
+        await new ProcesadorProgramado(db, _base.Reloj, notificaciones, NullLogger<ProcesadorProgramado>.Instance)
             .EjecutarCicloAsync(CancellationToken.None);
     }
 

@@ -9,11 +9,21 @@ namespace PetCare.Web.Programado;
 /// Un ciclo del proceso en segundo plano (R5). Se ejecuta cada 30 s sin depender de usuarios
 /// conectados; los tests lo llaman directamente con un reloj controlado.
 /// </summary>
-public sealed class ProcesadorProgramado(PetCareDbContext db, RelojHogar reloj, ILogger<ProcesadorProgramado> logger)
+public sealed class ProcesadorProgramado(
+    PetCareDbContext db,
+    RelojHogar reloj,
+    NotificacionesService notificaciones,
+    ILogger<ProcesadorProgramado> logger)
 {
     public async Task EjecutarCicloAsync(CancellationToken ct)
     {
         await GenerarInstanciasDelDiaAsync(ct);
+
+        // Paso 2: notificaciones nuevas cuya condición se cumplió (FR-036, FR-038).
+        await notificaciones.CrearAsync(ct);
+
+        // Paso 3: envío de las pendientes, con reintentos dentro de la ventana (FR-041).
+        await notificaciones.EnviarPendientesAsync(ct);
     }
 
     /// <summary>
