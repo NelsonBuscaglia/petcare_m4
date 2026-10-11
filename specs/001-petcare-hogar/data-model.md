@@ -33,7 +33,7 @@ hora del hogar (UTC−3, R2). Todos los cambios de esquema van por migraciones d
 | Nombre | string | Sin espacios al principio ni al final; no vacío (FR-007) |
 | NombreNormalizado | string | `Nombre` en mayúsculas (`ToUpperInvariant`); **único** por hogar (FR-007) |
 | CreadaDia | DateOnly | Base del aviso de baño sin baños registrados (FR-040) |
-| MaxDiasEntreBanos | int? | Opcional; una vez definido se puede modificar pero no quitar (FR-008, Fuera de Alcance) |
+| MaxDiasEntreBanos | int? | Opcional; entero mayor que 0; una vez definido se puede modificar pero no quitar (FR-008, Fuera de Alcance) |
 
 ## Deber
 
