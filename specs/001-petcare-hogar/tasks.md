@@ -129,7 +129,7 @@ días" y ver 08:00, 12:00, 16:00 y 20:00 hoy y mañana.
 - [X] T036 [P] [US2] Escribir `tests/PetCare.Tests/Servicios/EstadoDelDiaQueryTests.cs`: sección por mascota con sus instancias vigentes del día ordenadas por hora (FR-033), AC-65 (sin mascotas → estado vacío con opción de registrar), AC-02 (segundo cuidador ve la sección de la mascota A)
 - [X] T037 [P] [US2] Escribir `tests/PetCare.Tests/Programado/GeneracionDiariaTests.cs`: un ciclo de `ProcesadorProgramado` después de las 00:00 UTC−3 crea las instancias del día de los deberes diarios, y ejecutarlo dos veces no duplica (FR-017, R4)
 - [X] T038 [P] [US2] Escribir `tests/PetCare.Tests/Web/AccesoMascotasTests.cs`: AC-05 (`/` sin sesión), AC-05c (configuración de deberes), AC-05d (registrar mascota) y AC-05e (alta de deber) se rechazan sin datos ni cambios
-- [ ] T099 [US2] Agregar a `tests/PetCare.Tests/Servicios/MascotasServiceTests.cs` (cambio de PRD del 2026-10-11, RF-04c y RF-04d): AC-06d y AC-63e (nombre vacío → "El nombre de la mascota no puede estar vacío."), AC-06e (tres espacios → el mismo rechazo), AC-06f ("  Firulais  " se guarda como "Firulais") y AC-06g ("Firulais " se rechaza con Firulais ya registrada); en ningún rechazo se crea la mascota
+- [X] T099 [US2] Agregar a `tests/PetCare.Tests/Servicios/MascotasServiceTests.cs` (cambio de PRD del 2026-10-11, RF-04c y RF-04d): AC-06d y AC-63e (nombre vacío → "El nombre de la mascota no puede estar vacío."), AC-06e (tres espacios → el mismo rechazo), AC-06f ("  Firulais  " se guarda como "Firulais") y AC-06g ("Firulais " se rechaza con Firulais ya registrada); en ningún rechazo se crea la mascota
 
 ### Implementation for User Story 2
 

@@ -71,4 +71,48 @@ public class MascotasServiceTests : IDisposable
         Assert.Equal("Ya existe una mascota con ese nombre.", resultado.Error);
         Assert.Equal("Firulais", Assert.Single(Mascotas()).Nombre);
     }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task AC_06d_AC_06e_un_nombre_vacio_o_con_solo_espacios_se_rechaza(string nombre)
+    {
+        await Registrar("Firulais");
+
+        var resultado = await Registrar(nombre);
+
+        Assert.Equal("El nombre de la mascota no puede estar vacío.", resultado.Error);
+        Assert.Equal("Firulais", Assert.Single(Mascotas()).Nombre);
+    }
+
+    [Fact]
+    public async Task AC_63e_sin_mascotas_un_nombre_vacio_se_rechaza_informando_el_motivo()
+    {
+        var resultado = await Registrar("");
+
+        Assert.Equal("El nombre de la mascota no puede estar vacío.", resultado.Error);
+        Assert.Empty(Mascotas());
+    }
+
+    [Fact]
+    public async Task AC_06f_los_espacios_al_principio_y_al_final_se_quitan_al_guardar()
+    {
+        var resultado = await Registrar("  Firulais  ");
+
+        Assert.True(resultado.Ok, resultado.Error);
+        var firulais = Assert.Single(Mascotas());
+        Assert.Equal("Firulais", firulais.Nombre);
+        Assert.Equal("FIRULAIS", firulais.NombreNormalizado);
+    }
+
+    [Fact]
+    public async Task AC_06g_un_nombre_repetido_con_un_espacio_al_final_se_rechaza()
+    {
+        await Registrar("Firulais");
+
+        var resultado = await Registrar("Firulais ");
+
+        Assert.Equal("Ya existe una mascota con ese nombre.", resultado.Error);
+        Assert.Equal("Firulais", Assert.Single(Mascotas()).Nombre);
+    }
 }
