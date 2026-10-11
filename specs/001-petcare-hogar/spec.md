@@ -61,7 +61,8 @@ verificar que sin sesión toda consulta o modificación es rechazada.
    rechaza (AC-03, AC-03b, AC-04).
 6. **Given** un cuidador que cerró sesión o una persona sin sesión, **When** pide ver o modificar
    cualquier dato del hogar o el código de hogar, **Then** el sistema lo rechaza sin devolver
-   datos ni aplicar cambios (AC-04b, AC-05 a AC-05j).
+   datos ni aplicar cambios, y le muestra el inicio de sesión con "Iniciá sesión para
+   continuar." (AC-04b, AC-05 a AC-05k).
 7. **Given** un segundo cuidador con sesión, **When** consulta el código de hogar, **Then** ve el
    mismo código que se mostró a la primera persona (AC-01b).
 8. **Given** un cuidador cuya última solicitud fue hace más de 30 días, **When** intenta ver el
@@ -550,8 +551,9 @@ historias anteriores.
 
 **Generales**
 
-- **FR-051** (RF-36): Todo rechazo, salvo el de un inicio de sesión (FR-050), DEBE informar a
-  quien intentó la operación el motivo concreto.
+- **FR-051** (RF-36, RF-36b): Todo rechazo, salvo el de un inicio de sesión (FR-050), DEBE
+  informar a quien intentó la operación el motivo concreto; el rechazo por falta de sesión lo
+  informa en la pantalla de inicio de sesión con "Iniciá sesión para continuar."
 - **FR-042** (RNF-02): Todas las funciones DEBEN poder usarse desde un navegador móvil de 360
   píxeles de ancho o más, sin scroll horizontal y sin instalar una app.
 - **FR-043** (RNF-03): Registrar un cumplimiento aceptando la hora propuesta DEBE requerir 5
