@@ -218,7 +218,7 @@ aparece sin marca antes de la hora y "no cumplido" después.
 - [X] T065 [US5] Agregar a `src/PetCare.Web/Servicios/DeberesService.cs` el alta puntual: `Dia ≥ hoy` (FR-011), subtipo obligatorio solo en visita/estudio (FR-011, RF-11d), una instancia con `GeneradaVencida` si la hora ya pasó (AC-17d) — hace pasar T061
 - [X] T066 [US5] Agregar a `src/PetCare.Web/Servicios/MascotasService.cs` `DefinirMaxDiasEntreBanos` (definir o modificar, nunca quitar; FR-008) — hace pasar T062
 - [X] T103 [US5] Agregar a `MascotasService.DefinirMaxDiasEntreBanosAsync` en `src/PetCare.Web/Servicios/MascotasService.cs` el rechazo de un valor menor que 1 con su mensaje, sin modificar el máximo (RF-05c, FR-051) — hace pasar la parte de servicio de T102
-- [ ] T067 [US5] Extender `src/PetCare.Web/Dominio/ReglasVencimiento.cs` y `EstadoDelDiaQuery.cs` para puntuales: "no cumplido" cuando `ahora > programada` (FR-023), aparecen desde su día y siguen en días posteriores mientras estén vigentes (FR-033), con subtipo — hace pasar T063
+- [X] T067 [US5] Extender `src/PetCare.Web/Dominio/ReglasVencimiento.cs` y `EstadoDelDiaQuery.cs` para puntuales: "no cumplido" cuando `ahora > programada` (FR-023), aparecen desde su día y siguen en días posteriores mientras estén vigentes (FR-033), con subtipo — hace pasar T063
 - [ ] T068 [US5] Agregar a `src/PetCare.Web/Pages/Mascotas/Deberes.cshtml(.cs)` los handlers `AltaPuntual` (tipo, subtipo, fecha, hora) y `MaxBanos` (un valor que no llega como entero se rechaza con el mensaje de RF-05c), y mostrar el máximo de días (FR-008, FR-012) — hace pasar T064 y la parte web de T102
 - [ ] T069 [US5] Mostrar subtipo y marca "no cumplido" en `src/PetCare.Web/Pages/Shared/_EstadoDelDia.cshtml`
 

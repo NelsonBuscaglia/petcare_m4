@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PetCare.Web.Datos;
 using PetCare.Web.Dominio;
+using PetCare.Web.Dominio.Entidades;
 
 namespace PetCare.Web.Servicios;
 
@@ -26,8 +27,8 @@ public sealed class EstadoDelDiaQuery(PetCareDbContext db, RelojHogar reloj)
             .Where(i => !ReglasVencimiento.EstaExpirada(i, i.Deber!.Tipo, hoy))
             .Select(i => new
             {
-                i.Id, i.Deber!.MascotaId, i.Deber.Tipo, i.Dia, i.Hora,
-                Marca = ReglasVencimiento.EstaVencida(i, i.Deber.Tipo, ahora) ? MarcaInstancia.Pendiente : MarcaInstancia.Ninguna,
+                i.Id, i.Deber!.MascotaId, i.Deber.Tipo, i.Deber.Subtipo, i.Dia, i.Hora,
+                Marca = Marca(i, ahora),
             })
             .ToList();
 
@@ -52,7 +53,7 @@ public sealed class EstadoDelDiaQuery(PetCareDbContext db, RelojHogar reloj)
                 instancias
                     .Where(i => i.MascotaId == mascota.Id)
                     .OrderBy(i => i.Dia).ThenBy(i => i.Hora)
-                    .Select(i => new InstanciaVista(i.Id, i.Tipo, i.Dia, i.Hora, i.Marca))
+                    .Select(i => new InstanciaVista(i.Id, i.Tipo, i.Subtipo, i.Dia, i.Hora, i.Marca))
                     .ToList(),
                 resumen,
                 deHoy
@@ -63,6 +64,11 @@ public sealed class EstadoDelDiaQuery(PetCareDbContext db, RelojHogar reloj)
 
         return new EstadoDelDia(secciones);
     }
+
+    private static MarcaInstancia Marca(Instancia instancia, DateTime ahora) =>
+        !ReglasVencimiento.EstaVencida(instancia, instancia.Deber!.Tipo, ahora) ? MarcaInstancia.Ninguna
+        : instancia.Deber.EsProgramable ? MarcaInstancia.Pendiente
+        : MarcaInstancia.NoCumplido;
 
     /// <summary>El registro de mayor día y hora del tipo, aunque sea de un día anterior (FR-034).</summary>
     private Task<Momento?> UltimoCumplimientoAsync(int mascotaId, TipoDeber tipo) =>

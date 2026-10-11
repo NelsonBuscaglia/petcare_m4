@@ -83,7 +83,7 @@ public sealed class DeberesService(PetCareDbContext db, RelojHogar reloj)
             CreadoDia = reloj.Hoy,
         };
         db.Deberes.Add(deber);
-        db.Instancias.Add(new Instancia
+        var instancia = new Instancia
         {
             Deber = deber,
             Dia = alta.Dia,
@@ -91,9 +91,10 @@ public sealed class DeberesService(PetCareDbContext db, RelojHogar reloj)
             ProgramadaUtc = programadaUtc,
             Estado = EstadoInstancia.Vigente,
             GeneradaUtc = ahora,
-            // Hoy con la hora ya pasada: nace "no cumplido" y no dispara email (FR-023, FR-037, AC-17d).
-            GeneradaVencida = ahora > programadaUtc,
-        });
+        };
+        // Hoy con la hora ya pasada: nace "no cumplido" y no dispara email (FR-023, FR-037, AC-17d).
+        instancia.GeneradaVencida = ReglasVencimiento.EstaVencida(instancia, alta.Tipo, ahora);
+        db.Instancias.Add(instancia);
 
         await db.SaveChangesAsync();
         return Resultado<int>.Exito(deber.Id);

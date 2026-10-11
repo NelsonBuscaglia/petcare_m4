@@ -10,11 +10,16 @@ public static class ReglasVencimiento
     /// <summary>Tiempo sin cumplimiento hasta que una comida, paseo o medicación vence (FR-019).</summary>
     public static readonly TimeSpan Tolerancia = TimeSpan.FromMinutes(15);
 
-    /// <summary>Una comida, paseo o medicación vigente vence a los 15 minutos de su horario (FR-019).</summary>
+    /// <summary>
+    /// Una comida, paseo o medicación vigente vence a los 15 minutos de su horario ("pendiente",
+    /// FR-019); un baño o visita/estudio vigente, apenas se supera su fecha y hora ("no cumplido",
+    /// FR-023).
+    /// </summary>
     public static bool EstaVencida(Instancia instancia, TipoDeber tipo, DateTime ahoraUtc) =>
         instancia.Estado == EstadoInstancia.Vigente
-        && EsProgramable(tipo)
-        && ahoraUtc >= instancia.ProgramadaUtc + Tolerancia;
+        && (EsProgramable(tipo)
+            ? ahoraUtc >= instancia.ProgramadaUtc + Tolerancia
+            : ahoraUtc > instancia.ProgramadaUtc);
 
     /// <summary>Una comida o paseo no cumplido expira al terminar su día; la medicación no (FR-021, FR-022).</summary>
     public static bool EstaExpirada(Instancia instancia, TipoDeber tipo, DateOnly hoy) =>
