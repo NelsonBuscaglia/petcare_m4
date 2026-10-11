@@ -20,6 +20,10 @@ public static class Formato
 
     public static string Fecha(DateOnly dia) => dia.ToString("dd/MM/yyyy");
 
+    /// <summary>Fecha y, si la hay, hora real de un cumplimiento (FR-034).</summary>
+    public static string Momento(Servicios.Momento momento) =>
+        momento.Hora is { } hora ? $"{Fecha(momento.Dia)} {Hora(hora)}" : Fecha(momento.Dia);
+
     /// <summary>Los datos con que se dio de alta un deber programable (FR-012).</summary>
     public static string Programacion(Deber deber)
     {

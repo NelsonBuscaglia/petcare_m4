@@ -1,6 +1,7 @@
 @model PetCare.Web.Pages.SeccionMascotaVista
 @{
     var seccion = Model.Seccion;
+    var resumen = seccion.Resumen;
 }
 
 <section class="tarjeta mascota" id="mascota-@seccion.MascotaId">
@@ -12,12 +13,47 @@
     {
         <p class="error">@Model.Error</p>
     }
-    <ul class="lista">
-        @foreach (var instancia in seccion.Instancias)
-        {
-            <li id="instancia-@instancia.Id">
-                <span><strong>@Formato.Hora(instancia.Hora)</strong> · @Formato.Tipo(instancia.Tipo)</span>
-            </li>
-        }
-    </ul>
+
+    @* Resumen de la mascota (FR-034). *@
+    <dl class="resumen">
+        <div><dt>Paseos de hoy</dt><dd>@resumen.PaseosDeHoy</dd></div>
+        <div><dt>Última comida</dt><dd>@(resumen.UltimaComida is { } comida ? Formato.Momento(comida) : "ninguna registrada")</dd></div>
+        <div><dt>Último paseo</dt><dd>@(resumen.UltimoPaseo is { } paseo ? Formato.Momento(paseo) : "ninguno registrado")</dd></div>
+    </dl>
+
+    @if (seccion.SinTareasPendientes)
+    {
+        <p class="aviso">No hay tareas pendientes.</p>
+    }
+    else
+    {
+        <ul class="lista">
+            @foreach (var instancia in seccion.Instancias)
+            {
+                <li id="instancia-@instancia.Id">
+                    <span><strong>@Formato.Hora(instancia.Hora)</strong> · @Formato.Tipo(instancia.Tipo)</span>
+                    @* Primer toque del cumplimiento (FR-043). *@
+                    <button hx-get="@($"/?handler=FormCumplir&instanciaId={instancia.Id}")"
+                            hx-target="#instancia-@instancia.Id" hx-swap="innerHTML">Hecho</button>
+                </li>
+            }
+        </ul>
+    }
+
+    @if (seccion.RegistrosDeHoy.Count > 0)
+    {
+        @* Registros de hoy, que se pueden eliminar si se cargaron por error (FR-030). *@
+        <h3>Registrado hoy</h3>
+        <ul class="lista">
+            @foreach (var registro in seccion.RegistrosDeHoy)
+            {
+                <li>
+                    <span>@(registro.Hora is { } hora ? Formato.Hora(hora) + " · " : "")@Formato.Tipo(registro.Tipo)</span>
+                    <button class="secundario" hx-post="/?handler=EliminarRegistro" hx-vals='{"registroId": @registro.Id}'
+                            hx-target="#mascota-@seccion.MascotaId" hx-swap="outerHTML"
+                            hx-confirm="¿Eliminar este registro?">Eliminar</button>
+                </li>
+            }
+        </ul>
+    }
 </section>
