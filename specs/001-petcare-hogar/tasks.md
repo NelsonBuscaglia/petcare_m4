@@ -44,7 +44,7 @@ prioridad.
 - [ ] T002 Crear el manifiesto `.config/dotnet-tools.json` con `dotnet-ef` 10.x (`dotnet new tool-manifest` + `dotnet tool install dotnet-ef`)
 - [ ] T003 Agregar a `src/PetCare.Web/PetCare.Web.csproj` los paquetes `Microsoft.EntityFrameworkCore.Sqlite` 10.x, `Microsoft.EntityFrameworkCore.Design` 10.x y `MailKit`
 - [ ] T004 Agregar a `tests/PetCare.Tests/PetCare.Tests.csproj` los paquetes `Microsoft.AspNetCore.Mvc.Testing` 10.x, `Microsoft.Extensions.TimeProvider.Testing` y `Microsoft.EntityFrameworkCore.Sqlite` 10.x
-- [ ] T005 [P] Crear `.gitignore` en la raíz con `bin/`, `obj/`, `petcare.db`, `petcare.db-shm`, `petcare.db-wal` y `*.user`
+- [X] T005 [P] Crear `.gitignore` en la raíz con `bin/`, `obj/`, `petcare.db`, `petcare.db-shm`, `petcare.db-wal` y `*.user`
 - [ ] T006 [P] Copiar HTMX 2.x minificado a `src/PetCare.Web/wwwroot/lib/htmx/htmx.min.js` (sin CDN, R12)
 - [ ] T007 [P] Configurar `src/PetCare.Web/appsettings.json` con `ConnectionStrings:PetCare = "Data Source=petcare.db"` y sin ninguna sección `Smtp` (Principio II)
 

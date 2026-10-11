@@ -1,0 +1,6 @@
+bin/
+obj/
+petcare.db
+petcare.db-shm
+petcare.db-wal
+*.user
