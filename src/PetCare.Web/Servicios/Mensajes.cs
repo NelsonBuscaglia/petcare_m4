@@ -11,4 +11,6 @@ public static class Mensajes
     public const string SinSesion = "Iniciá sesión para continuar.";
     public const string MascotaSinNombre = "El nombre de la mascota no puede estar vacío.";
     public const string MascotaRepetida = "Ya existe una mascota con ese nombre.";
+    public const string IntervaloFueraDeRango = "N debe ser un número entero entre 1 y 23.";
+    public const string FechaPasada = "La fecha no puede ser anterior a hoy.";
 }

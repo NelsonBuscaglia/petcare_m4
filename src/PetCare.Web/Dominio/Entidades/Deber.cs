@@ -43,4 +43,7 @@ public class Deber
 
     /// <summary>Baja definitiva (FR-013); nunca vuelve a null.</summary>
     public DateTime? DadoDeBajaUtc { get; set; }
+
+    /// <summary>Comida, paseo o medicación; baño y visita/estudio son puntuales (FR-009, FR-011).</summary>
+    public bool EsProgramable => Tipo is TipoDeber.Comida or TipoDeber.Paseo or TipoDeber.Medicacion;
 }

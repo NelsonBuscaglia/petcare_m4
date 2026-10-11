@@ -14,9 +14,13 @@ public class DeberesProgramablesTests : IDisposable
     private readonly BaseDeDatosDePrueba _base = new();
     private readonly int _firulais;
 
+    /// <summary>
+    /// El hogar y Firulais se cargan ayer; cada test lleva el reloj al momento que necesita
+    /// (el reloj de prueba no puede volver atrás).
+    /// </summary>
     public DeberesProgramablesTests()
     {
-        Fijar(Hoy, 7);
+        Fijar(Ayer, 6);
         Semillas.Hogar(_base);
         _firulais = Semillas.Mascota(_base, "Firulais");
     }
@@ -59,6 +63,7 @@ public class DeberesProgramablesTests : IDisposable
     [InlineData(24)]
     public async Task AC_10b_AC_10c_AC_63b_N_fuera_de_1_a_23_se_rechaza_y_no_aparece_en_la_configuracion(int n)
     {
+        Fijar(Hoy, 7);
         var resultado = await Alta(_firulais, TipoDeber.Paseo, "08:00", cadaNHoras: n);
 
         Assert.Equal("N debe ser un número entero entre 1 y 23.", resultado.Error);
@@ -70,6 +75,7 @@ public class DeberesProgramablesTests : IDisposable
     [InlineData(23)]
     public async Task FR_009_N_entre_1_y_23_se_acepta(int n)
     {
+        Fijar(Hoy, 7);
         var resultado = await Alta(_firulais, TipoDeber.Paseo, "08:00", cadaNHoras: n);
 
         Assert.True(resultado.Ok, resultado.Error);
@@ -78,6 +84,7 @@ public class DeberesProgramablesTests : IDisposable
     [Fact]
     public async Task AC_13d_medicacion_diaria_con_fecha_de_fin_ayer_se_rechaza()
     {
+        Fijar(Hoy, 7);
         var resultado = await Alta(_firulais, TipoDeber.Medicacion, "09:00", hasta: Ayer);
 
         Assert.Equal("La fecha no puede ser anterior a hoy.", resultado.Error);
@@ -87,6 +94,7 @@ public class DeberesProgramablesTests : IDisposable
     [Fact]
     public async Task FR_010_medicacion_diaria_con_fecha_de_fin_hoy_se_acepta()
     {
+        Fijar(Hoy, 7);
         var resultado = await Alta(_firulais, TipoDeber.Medicacion, "09:00", hasta: Hoy);
 
         Assert.True(resultado.Ok, resultado.Error);
@@ -95,6 +103,7 @@ public class DeberesProgramablesTests : IDisposable
     [Fact]
     public async Task FR_010_la_fecha_de_fin_solo_aplica_a_la_medicacion_diaria()
     {
+        Fijar(Hoy, 7);
         var paseo = await AltaOk(_firulais, TipoDeber.Paseo, "09:00", hasta: Ayer);
 
         Assert.Null(Assert.Single(await Activos(_firulais)).HastaDia);
@@ -138,6 +147,7 @@ public class DeberesProgramablesTests : IDisposable
     [Fact]
     public async Task AC_09_el_deber_de_la_mascota_A_no_genera_instancias_ni_aparece_en_la_mascota_B()
     {
+        Fijar(Hoy, 7);
         var b = Semillas.Mascota(_base, "B");
 
         var paseoDeA = await AltaOk(_firulais, TipoDeber.Paseo, "08:00", cadaNHoras: 4);
@@ -151,6 +161,7 @@ public class DeberesProgramablesTests : IDisposable
     [Fact]
     public async Task AC_19b_parte_paseo_la_configuracion_muestra_el_deber_una_vez_con_sus_datos_de_alta()
     {
+        Fijar(Hoy, 7);
         await AltaOk(_firulais, TipoDeber.Paseo, "08:00", cadaNHoras: 4);
 
         var paseo = Assert.Single(await Activos(_firulais));
@@ -176,6 +187,7 @@ public class DeberesProgramablesTests : IDisposable
     [Fact]
     public async Task AC_19f_un_deber_dado_de_alta_desde_la_configuracion_aparece_en_ella()
     {
+        Fijar(Hoy, 7);
         var paseo = await AltaOk(_firulais, TipoDeber.Paseo, "18:00");
 
         Assert.Equal(paseo, Assert.Single(await Activos(_firulais)).Id);
