@@ -61,7 +61,7 @@ historias.
 
 ### Tests primero
 
-- [ ] T008 [P] Escribir `tests/PetCare.Tests/Dominio/RelojHogarTests.cs`: `Hoy` y la hora del hogar se calculan con offset fijo −03:00 sin horario de verano (FR-044); 03:05 UTC es 00:05 del nuevo día (AC-28), 02:59 UTC es 23:59 del día anterior (AC-28b); conversión ida y vuelta `Dia`+`Hora` ↔ instante UTC
+- [X] T008 [P] Escribir `tests/PetCare.Tests/Dominio/RelojHogarTests.cs`: `Hoy` y la hora del hogar se calculan con offset fijo −03:00 sin horario de verano (FR-044); 03:05 UTC es 00:05 del nuevo día (AC-28), 02:59 UTC es 23:59 del día anterior (AC-28b); conversión ida y vuelta `Dia`+`Hora` ↔ instante UTC
 - [ ] T009 Crear la infraestructura de tests en `tests/PetCare.Tests/Infra/BaseDeDatosDePrueba.cs` (conexión SQLite `DataSource=:memory:` abierta durante el test y esquema creado aplicando las migraciones de `PetCareDbContext`, R11) y `tests/PetCare.Tests/Infra/FakeEmailSender.cs` (registra cada envío con destinatarios, asunto y cuerpo; permite programar rechazos o demoras por intento); el esquema necesita la migración de T018
 
 ### Implementación
