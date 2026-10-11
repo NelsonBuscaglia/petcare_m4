@@ -46,7 +46,7 @@ prioridad.
 - [X] T004 Agregar a `tests/PetCare.Tests/PetCare.Tests.csproj` los paquetes `Microsoft.AspNetCore.Mvc.Testing` 10.x, `Microsoft.Extensions.TimeProvider.Testing` y `Microsoft.EntityFrameworkCore.Sqlite` 10.x
 - [X] T005 [P] Crear `.gitignore` en la raíz con `bin/`, `obj/`, `petcare.db`, `petcare.db-shm`, `petcare.db-wal` y `*.user`
 - [X] T006 [P] Copiar HTMX 2.x minificado a `src/PetCare.Web/wwwroot/lib/htmx/htmx.min.js` (sin CDN, R12)
-- [ ] T007 [P] Configurar `src/PetCare.Web/appsettings.json` con `ConnectionStrings:PetCare = "Data Source=petcare.db"` y sin ninguna sección `Smtp` (Principio II)
+- [X] T007 [P] Configurar `src/PetCare.Web/appsettings.json` con `ConnectionStrings:PetCare = "Data Source=petcare.db"` y sin ninguna sección `Smtp` (Principio II)
 
 **Checkpoint**: `dotnet build` y `dotnet test` corren (sin tests todavía).
 
