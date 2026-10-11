@@ -116,3 +116,6 @@ a.boton.secundario { color: #1f2328; background: #e6e9ed; }
 .resumen dt { font-weight: 600; }
 .resumen dd { margin: 0; }
 h3 { font-size: 1rem; margin: 1rem 0 .25rem; }
+
+/* Marca de una instancia vencida (FR-019) */
+.marca { display: inline-block; margin-left: .25rem; padding: .1rem .5rem; font-size: .8rem; font-weight: 700; color: #8a1c13; background: #fdecea; border-radius: 1rem; }
