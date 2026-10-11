@@ -66,7 +66,7 @@ historias.
 
 ### Implementación
 
-- [ ] T010 Implementar `src/PetCare.Web/Dominio/RelojHogar.cs` sobre el `TimeProvider` inyectado: `AhoraUtc`, `Hoy` (`DateOnly`), `HoraActual` (`TimeOnly`), `AUtc(DateOnly, TimeOnly)` y `ADiaHora(DateTime utc)`, offset fijo −03:00 (R2) — hace pasar T008
+- [X] T010 Implementar `src/PetCare.Web/Dominio/RelojHogar.cs` sobre el `TimeProvider` inyectado: `AhoraUtc`, `Hoy` (`DateOnly`), `HoraActual` (`TimeOnly`), `AUtc(DateOnly, TimeOnly)` y `ADiaHora(DateTime utc)`, offset fijo −03:00 (R2) — hace pasar T008
 - [ ] T011 [P] Crear los enums en `src/PetCare.Web/Dominio/Enums.cs`: `TipoDeber` (Comida, Paseo, Medicacion, Bano, VisitaEstudio), `SubtipoVisita` (Veterinario, Estudio, Vacuna, IntervencionMedica), `Modalidad` (HoraFija, CadaNHoras), `Recurrencia` (SoloHoy, TodosLosDias), `EstadoInstancia` (Vigente, Cumplida, DadaDeBaja), `TipoNotificacion` (Vencimiento, Recordatorio, AvisoTurnoBano), `EstadoNotificacion` (Pendiente, Aceptada, Perdida)
 - [ ] T012 [P] Crear `src/PetCare.Web/Dominio/Entidades/Hogar.cs` y `Cuidador.cs` según data-model: Hogar `Id` "siempre `1`: existe un único hogar", `Codigo` string(8) "se guarda en mayúsculas", `CreadoUtc`; Cuidador `Email`, `EmailNormalizado` "`ToUpperInvariant`; **único**", `PasswordHash`, `CreadoUtc`, FK `HogarId`
 - [ ] T013 [P] Crear `src/PetCare.Web/Dominio/Entidades/Mascota.cs`: `Nombre` "Obligatorio", `NombreNormalizado` "**Único** por hogar", `CreadaDia` (`DateOnly`), `MaxDiasEntreBanos` (`int?`) "Opcional; una vez definido se puede modificar pero no quitar"
