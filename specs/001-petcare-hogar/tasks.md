@@ -106,7 +106,7 @@ con ese código; iniciar y cerrar sesión; sin sesión, toda página protegida r
 - [X] T028 [US1] Crear `src/PetCare.Web/Pages/Cuenta/Registro.cshtml(.cs)`: formulario email, contraseña y código; al registrarse inicia sesión con `IsPersistent = true` (R9) y muestra el código si creó el hogar (FR-001); muestra el motivo de rechazo
 - [X] T029 [P] [US1] Crear `src/PetCare.Web/Pages/Cuenta/Login.cshtml(.cs)` (verificación con `PasswordHasher`, email normalizado; `SignInAsync` con `IsPersistent = true` (R9); con `motivo=sin-sesion` muestra "Iniciá sesión para continuar." (FR-051); ante cualquier fallo, "El email o la contraseña son incorrectos.", FR-050) y `src/PetCare.Web/Pages/Cuenta/Logout.cshtml(.cs)` (`POST` que cierra la sesión, FR-005)
 - [X] T030 [P] [US1] Crear `src/PetCare.Web/Pages/Hogar/Codigo.cshtml(.cs)` que muestra el código de hogar al cuidador con sesión (FR-004)
-- [ ] T031 [US1] Crear `src/PetCare.Web/Pages/Index.cshtml(.cs)` mínima (requiere sesión, enlaces a código de hogar y cerrar sesión) como destino del login; US2 la completa
+- [X] T031 [US1] Crear `src/PetCare.Web/Pages/Index.cshtml(.cs)` mínima (requiere sesión, enlaces a código de hogar y cerrar sesión) como destino del login; US2 la completa
 - [ ] T032 [US1] Implementar `src/PetCare.Web/Infra/EventosCookie.cs` y registrarlo en `Program.cs`: `OnValidatePrincipal` fija `ShouldRenew = true` (R9); `OnRedirectToLogin` redirige a `/Cuenta/Login?motivo=sin-sesion` y, si la solicitud es HTMX (`HX-Request: true`), responde `401` sin cuerpo con `HX-Redirect: /Cuenta/Login?motivo=sin-sesion` (contracts/ui-routes.md, FR-006, FR-051) — hace pasar T024 y T025
 
 **Checkpoint**: US1 funciona sola; MVP de acceso al hogar.

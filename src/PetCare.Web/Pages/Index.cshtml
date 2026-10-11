@@ -1,10 +1,14 @@
-﻿@page
+@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Estado del día";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Estado del día</h1>
+<div class="tarjeta">
+    <p><a href="/Hogar/Codigo">Ver el código de hogar</a></p>
+    <form method="post" action="/Cuenta/Logout">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="secundario">Cerrar sesión</button>
+    </form>
 </div>
