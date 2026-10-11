@@ -94,3 +94,7 @@ button.enlace { min-height: 0; padding: 0; background: none; text-decoration: un
 }
 .lista > li:first-child { border-top: 0; }
 .acciones { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* Código de hogar */
+.codigo { font-family: ui-monospace, monospace; font-size: 1.6rem; font-weight: 700; letter-spacing: .2em; }
+.ayuda { margin: 0; font-size: .9rem; color: #4b5563; }

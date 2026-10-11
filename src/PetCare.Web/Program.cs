@@ -1,7 +1,11 @@
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.WebEncoders;
 using PetCare.Web.Datos;
 using PetCare.Web.Dominio;
+using PetCare.Web.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,12 @@ builder.Services.AddSingleton<RelojHogar>();
 
 builder.Services.AddDbContext<PetCareDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("PetCare")));
+
+builder.Services.AddScoped<RegistroService>();
+
+// Los textos en español (á, ñ, ¿…) se escriben tal cual en el HTML, sin convertirlos en entidades.
+builder.Services.Configure<WebEncoderOptions>(options =>
+    options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 
 // Sesión de 30 días desde la última solicitud (FR-005, R9). La renovación y la respuesta sin
 // sesión se configuran en los eventos de la cookie (US1).
