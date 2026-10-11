@@ -153,6 +153,7 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 ### Rechazos
 
 - RF-36: Al rechazar cualquier operación, salvo un inicio de sesión (RF-02d), el sistema debe informar a quien la intentó el motivo concreto del rechazo.
+- RF-36b: Al rechazar una operación por falta de sesión iniciada, el sistema debe informar el motivo en la pantalla de inicio de sesión con el mensaje "Iniciá sesión para continuar."
 
 ## Requerimientos No Funcionales
 
@@ -198,6 +199,7 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - AC-05h (RF-03b): Dada una persona sin sesión iniciada, cuando envía una solicitud para eliminar un registro de cumplimiento del día, entonces el sistema rechaza la operación y el registro se conserva.
 - AC-05i (RF-03b): Dada una mascota con un máximo de 20 días entre baños, cuando una persona sin sesión iniciada envía una solicitud para cambiarlo a 30, entonces el sistema rechaza la operación y la configuración de deberes de esa mascota sigue mostrando un máximo de 20.
 - AC-05j (RF-01g): Dada una persona sin sesión iniciada, cuando envía una solicitud para consultar el código de hogar, entonces el sistema le niega el acceso y no devuelve el código.
+- AC-05k (RF-36b, RF-03): Dada una persona sin sesión iniciada, cuando solicita ver el estado del día, entonces el sistema no le devuelve ningún dato del hogar y le muestra la pantalla de inicio de sesión con el mensaje "Iniciá sesión para continuar."
 
 ### Mascotas
 
