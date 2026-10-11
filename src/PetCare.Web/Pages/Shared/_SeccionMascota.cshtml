@@ -33,12 +33,16 @@
             {
                 <li id="instancia-@instancia.Id">
                     <span>
-                        @* La medicación arrastrada muestra su día (FR-022). *@
+                        @* Lo que viene de días anteriores muestra su día: medicación, baño o visita/estudio (FR-022, FR-023). *@
                         <strong>@(instancia.Dia == Reloj.Hoy ? "" : Formato.Fecha(instancia.Dia) + " ")@Formato.Hora(instancia.Hora)</strong>
-                        · @Formato.Tipo(instancia.Tipo)
+                        · @Formato.Tipo(instancia.Tipo, instancia.Subtipo)
                         @if (instancia.Marca == PetCare.Web.Servicios.MarcaInstancia.Pendiente)
                         {
                             <span class="marca">pendiente</span>
+                        }
+                        else if (instancia.Marca == PetCare.Web.Servicios.MarcaInstancia.NoCumplido)
+                        {
+                            <span class="marca">no cumplido</span>
                         }
                     </span>
                     @* Primer toque del cumplimiento (FR-043). *@
