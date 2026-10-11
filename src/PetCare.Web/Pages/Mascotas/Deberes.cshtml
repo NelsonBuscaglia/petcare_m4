@@ -18,7 +18,7 @@
             @foreach (var deber in Model.Activos)
             {
                 <li>
-                    <span><strong>@Formato.Tipo(deber.Tipo)</strong> · @Formato.Programacion(deber)</span>
+                    <span><strong>@Formato.Tipo(deber.Tipo, deber.Subtipo)</strong> · @Formato.Programacion(deber)</span>
                 </li>
             }
         </ul>
@@ -54,6 +54,49 @@
             <label>Fecha de fin (solo medicación diaria; vacía = para siempre) <input type="date" name="HastaDia" value="@Model.HastaDia?.ToString("yyyy-MM-dd")" /></label>
         </fieldset>
         <button type="submit">Dar de alta</button>
+    </form>
+</section>
+
+<section class="tarjeta">
+    <h2>Agendar baño o visita/estudio</h2>
+    @if (Model.ErrorPuntual is not null)
+    {
+        <p class="error">@Model.ErrorPuntual</p>
+    }
+    <form method="post" asp-page-handler="AltaPuntual" class="formulario">
+        <label>
+            Tipo
+            <select name="Tipo">
+                <option value="Bano" selected="@(Model.Tipo == TipoDeber.Bano)">Baño</option>
+                <option value="VisitaEstudio" selected="@(Model.Tipo == TipoDeber.VisitaEstudio)">Visita/estudio</option>
+            </select>
+        </label>
+        <label>
+            Subtipo (solo visita/estudio)
+            <select name="Subtipo">
+                <option value="">—</option>
+                @foreach (var subtipo in Enum.GetValues<SubtipoVisita>())
+                {
+                    <option value="@subtipo" selected="@(Model.Subtipo == subtipo)">@Formato.Subtipo(subtipo)</option>
+                }
+            </select>
+        </label>
+        <label>Fecha <input type="date" name="Dia" value="@Model.Dia?.ToString("yyyy-MM-dd")" required /></label>
+        <label>Hora <input type="time" name="Hora" value="@Model.Hora?.ToString("HH:mm")" required /></label>
+        <button type="submit">Agendar</button>
+    </form>
+</section>
+
+<section class="tarjeta">
+    <h2>Máximo de días entre baños</h2>
+    <p>@(Model.Mascota.MaxDiasEntreBanos is { } maximo ? $"Actual: {maximo} días." : "Sin definir.")</p>
+    @if (Model.ErrorMaxBanos is not null)
+    {
+        <p class="error">@Model.ErrorMaxBanos</p>
+    }
+    <form method="post" asp-page-handler="MaxBanos" class="formulario">
+        <label>Días <input name="MaxDiasEntreBanos" value="@(Model.MaxDiasEntreBanos ?? Model.Mascota.MaxDiasEntreBanos?.ToString())" inputmode="numeric" /></label>
+        <button type="submit">Guardar</button>
     </form>
 </section>
 

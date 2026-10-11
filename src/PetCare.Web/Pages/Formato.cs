@@ -16,6 +16,19 @@ public static class Formato
         _ => tipo.ToString(),
     };
 
+    public static string Subtipo(SubtipoVisita subtipo) => subtipo switch
+    {
+        SubtipoVisita.Veterinario => "veterinario",
+        SubtipoVisita.Estudio => "estudio",
+        SubtipoVisita.Vacuna => "vacuna",
+        SubtipoVisita.IntervencionMedica => "intervención médica",
+        _ => subtipo.ToString(),
+    };
+
+    /// <summary>El tipo con el subtipo de las visitas/estudios, por ejemplo "Visita/estudio (vacuna)" (RF-28a).</summary>
+    public static string Tipo(TipoDeber tipo, SubtipoVisita? subtipo) =>
+        subtipo is { } s ? $"{Tipo(tipo)} ({Subtipo(s)})" : Tipo(tipo);
+
     public static string Hora(TimeOnly hora) => hora.ToString("HH:mm");
 
     public static string Fecha(DateOnly dia) => dia.ToString("dd/MM/yyyy");
@@ -24,9 +37,11 @@ public static class Formato
     public static string Momento(Servicios.Momento momento) =>
         momento.Hora is { } hora ? $"{Fecha(momento.Dia)} {Hora(hora)}" : Fecha(momento.Dia);
 
-    /// <summary>Los datos con que se dio de alta un deber programable (FR-012).</summary>
+    /// <summary>Los datos con que se dio de alta un deber (FR-012).</summary>
     public static string Programacion(Deber deber)
     {
+        if (!deber.EsProgramable) return $"el {Fecha(deber.Dia!.Value)} a las {Hora(deber.Hora!.Value)}";
+
         var partes = new List<string>
         {
             deber.Modalidad == Modalidad.CadaNHoras
