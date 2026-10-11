@@ -238,7 +238,7 @@ sigue y mañana vuelven las cuatro); dar de baja un deber y ver que desaparece.
 
 - [X] T070 [P] [US6] Escribir `tests/PetCare.Tests/Servicios/BajasTests.cs`: AC-20d y AC-24 (baja de deber: desaparece de la configuración y no hay instancias mañana), AC-20b parte pantalla (medicación con instancias de ayer y hoy sin cumplir: ninguna aparece), AC-25 (los registros se conservan), AC-20 y AC-20c (baja de la instancia de un deber de instancia única da de baja el deber), AC-23 y AC-23b (baja de la instancia de las 12:00 conserva el deber y las demás)
 - [X] T071 [P] [US6] Escribir `tests/PetCare.Tests/Servicios/ConflictosTests.cs`: AC-32c (baja y después cumplimiento → "Esta tarea ya fue dada de baja."), AC-32d (cumplimiento y después baja → "Esta tarea ya fue cumplida."), AC-32e (dos bajas), AC-32f (baja del deber y después cumplimiento de una instancia), con la cantidad de paseos esperada en cada caso
-- [ ] T072 [P] [US6] Escribir en `tests/PetCare.Tests/Web/AccesoMascotasTests.cs` los casos AC-05f (baja de deber sin sesión) y AC-05g (baja de instancia sin sesión)
+- [X] T072 [P] [US6] Escribir en `tests/PetCare.Tests/Web/AccesoMascotasTests.cs` los casos AC-05f (baja de deber sin sesión) y AC-05g (baja de instancia sin sesión)
 
 ### Implementation for User Story 6
 

@@ -1,5 +1,7 @@
 using System.Net;
 using PetCare.Tests.Infra;
+using PetCare.Web.Dominio;
+using PetCare.Web.Dominio.Entidades;
 
 namespace PetCare.Tests.Web;
 
@@ -74,6 +76,56 @@ public class AccesoMascotasTests : IDisposable
         using var db = _app.Base.Contexto();
         Assert.Empty(db.Deberes);
         Assert.Empty(db.Instancias);
+    }
+
+    /// <summary>Paseo diario de Firulais con su instancia de hoy vigente; devuelve el deber y la instancia.</summary>
+    private (int Deber, int Instancia) PaseoVigente()
+    {
+        using var db = _app.Base.Contexto();
+        var hoy = new DateOnly(2026, 10, 10);
+        var instancia = new Instancia
+        {
+            Deber = new Deber
+            {
+                MascotaId = _firulais, Tipo = TipoDeber.Paseo, Modalidad = Modalidad.HoraFija,
+                HoraInicio = new TimeOnly(12, 0), Recurrencia = Recurrencia.TodosLosDias, CreadoDia = hoy,
+            },
+            Dia = hoy,
+            Hora = new TimeOnly(12, 0),
+            ProgramadaUtc = RelojHogar.AUtc(hoy, new TimeOnly(12, 0)),
+            Estado = EstadoInstancia.Vigente,
+        };
+        db.Instancias.Add(instancia);
+        db.SaveChanges();
+        return (instancia.DeberId, instancia.Id);
+    }
+
+    [Fact]
+    public async Task AC_05f_dar_de_baja_un_deber_sin_sesion_se_rechaza_y_el_deber_sigue_activo()
+    {
+        var (deber, instancia) = PaseoVigente();
+
+        var response = await _anonimo.PostAsync($"/Mascotas/{_firulais}/Deberes?handler=Baja",
+            new Dictionary<string, string?> { ["DeberId"] = deber.ToString() });
+
+        await AssertRechazadoSinDatos(response);
+        using var db = _app.Base.Contexto();
+        Assert.Null(db.Deberes.Single(d => d.Id == deber).DadoDeBajaUtc);
+        Assert.Equal(EstadoInstancia.Vigente, db.Instancias.Single(i => i.Id == instancia).Estado);
+    }
+
+    [Fact]
+    public async Task AC_05g_dar_de_baja_una_instancia_sin_sesion_se_rechaza_y_sigue_vigente()
+    {
+        var (_, instancia) = PaseoVigente();
+
+        var response = await _anonimo.PostAsync("/?handler=BajaInstancia",
+            new Dictionary<string, string?> { ["InstanciaId"] = instancia.ToString() }, htmx: true);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Empty(await response.Content.ReadAsStringAsync());
+        using var db = _app.Base.Contexto();
+        Assert.Equal(EstadoInstancia.Vigente, db.Instancias.Single(i => i.Id == instancia).Estado);
     }
 
     [Fact]
