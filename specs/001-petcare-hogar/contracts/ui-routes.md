@@ -67,3 +67,4 @@ en el parcial con la hora propuesta. Dos toques en el caso por defecto.
 | Hora real futura | "La hora no puede ser posterior a la actual." |
 | Instancia ya cumplida / dada de baja | "Esta tarea ya fue cumplida." / "Esta tarea ya fue dada de baja." |
 | Eliminar registro de otro día | "Solo se pueden eliminar registros de hoy." |
+| Cumplir una instancia inexistente | "Esa tarea no existe." (FR-031) |
