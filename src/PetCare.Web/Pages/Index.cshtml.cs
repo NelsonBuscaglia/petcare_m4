@@ -19,6 +19,9 @@ public class IndexModel(
 
     public async Task OnGetAsync() => Estado = await consulta.ObtenerAsync();
 
+    /// <summary>Actualización automática: solo el parcial del estado del día (FR-035, R6).</summary>
+    public async Task<IActionResult> OnGetRefrescoAsync() => Partial("_EstadoDelDia", await consulta.ObtenerAsync());
+
     /// <summary>Primer toque: el formulario con la hora propuesta (FR-025, FR-027, FR-043).</summary>
     public async Task<IActionResult> OnGetFormCumplirAsync(int instanciaId)
     {
