@@ -20,6 +20,7 @@ builder.Services.AddDbContext<PetCareDbContext>(options =>
 builder.Services.AddScoped<RegistroService>();
 builder.Services.AddScoped<MascotasService>();
 builder.Services.AddScoped<DeberesService>();
+builder.Services.AddScoped<EstadoDelDiaQuery>();
 
 // Los textos en español (á, ñ, ¿…) se escriben tal cual en el HTML, sin convertirlos en entidades.
 builder.Services.Configure<WebEncoderOptions>(options =>
