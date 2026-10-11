@@ -291,7 +291,7 @@ su momento y no en los casos excluidos.
 ### Implementation for User Story 8
 
 - [X] T085 [P] [US8] Crear `src/PetCare.Web/Email/IEmailSender.cs`, `src/PetCare.Web/Email/ConsoleEmailSender.cs` (escribe en la consola, nunca envía) y `src/PetCare.Web/Email/SmtpOptions.cs` (`Host`, `Port`, `User`, `Password`, `From`, validadas al arrancar)
-- [ ] T086 [P] [US8] Crear `src/PetCare.Web/Email/SmtpEmailSender.cs` con MailKit y `SmtpClient.Timeout = 30000` (FR-041); lanza excepción si el servicio rechaza o no responde
+- [X] T086 [P] [US8] Crear `src/PetCare.Web/Email/SmtpEmailSender.cs` con MailKit y `SmtpClient.Timeout = 30000` (FR-041); lanza excepción si el servicio rechaza o no responde
 - [ ] T087 [P] [US8] Implementar `src/PetCare.Web/Dominio/PlantillasEmail.cs` con asuntos y cuerpos de contracts/emails.md (FR-054, FR-039) — hace pasar T080
 - [ ] T088 [US8] Implementar `src/PetCare.Web/Servicios/NotificacionesService.cs`: crear notificaciones de vencimiento con clave `V:{instanciaId}:{episodio}` según las reglas de episodios de R7 (sin `Aceptada` previa, no episodio 0 de `GeneradaVencida` (FR-037), condición `max(vencimiento, ReactivadaUtc)`) y de recordatorio con clave `R:{deberId}` (alta con ≥ 48 h, deber sin baja, FR-038); nacen `Perdida` si se detectan después de `CondicionUtc + 5 min`
 - [ ] T089 [US8] Agregar a `src/PetCare.Web/Servicios/NotificacionesService.cs` el envío: para cada `Pendiente` dentro de la ventana, enviar a todos los cuidadores con `PlantillasEmail`; aceptar → `Aceptada`; error → `Intentos + 1`; fuera de la ventana → `Perdida` (FR-036, FR-041)
