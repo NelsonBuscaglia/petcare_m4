@@ -310,7 +310,7 @@ tardar a las 07:05; ninguno en los casos excluidos.
 
 ### Tests for User Story 9 ⚠️
 
-- [ ] T091 [P] [US9] Escribir `tests/PetCare.Tests/Dominio/AvisoTurnoBanoTests.cs`: regla de las tres condiciones de FR-040 con días calendario en UTC−3: AC-53 (25 días, sí), AC-53d (exactamente 20, no), AC-55 (sin máximo, no), AC-56 (sin baños y alta hace 25, sí), AC-54, AC-54b y AC-54c (baño activo futuro, de hoy o "no cumplido", no)
+- [X] T091 [P] [US9] Escribir `tests/PetCare.Tests/Dominio/AvisoTurnoBanoTests.cs`: regla de las tres condiciones de FR-040 con días calendario en UTC−3: AC-53 (25 días, sí), AC-53d (exactamente 20, no), AC-55 (sin máximo, no), AC-56 (sin baños y alta hace 25, sí), AC-54, AC-54b y AC-54c (baño activo futuro, de hoy o "no cumplido", no)
 - [ ] T092 [P] [US9] Escribir `tests/PetCare.Tests/Programado/AvisoTurnoBanoEnvioTests.cs`: AC-53b (≤ 07:05), AC-53 (exactamente uno en el día), AC-58 (se repite al día siguiente), AC-53c (baja del baño futuro a las 10:00 → ese día no, el siguiente sí), AC-64c y AC-64d (contenido con máximo y último baño, o "no hay baños registrados")
 
 ### Implementation for User Story 9
