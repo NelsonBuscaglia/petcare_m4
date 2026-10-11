@@ -1,0 +1,121 @@
+/* Mobile-first: una sola columna y sin scroll horizontal desde 360 px de ancho (FR-042). */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    min-width: 360px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.4;
+    color: #1f2328;
+    background: #f6f7f9;
+    overflow-wrap: anywhere;
+}
+
+img, input, select, textarea, button { max-width: 100%; }
+
+/* Barra superior */
+.barra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    padding: .75rem 1rem;
+    background: #2f6f4f;
+    color: #fff;
+}
+.barra a, .barra .enlace { color: #fff; }
+.logo { font-size: 1.15rem; font-weight: 700; text-decoration: none; }
+.menu { display: flex; align-items: center; gap: 1rem; }
+.menu form { margin: 0; }
+
+/* Contenido en una columna */
+.contenido { width: 100%; max-width: 40rem; margin: 0 auto; padding: 1rem; }
+
+h1 { font-size: 1.4rem; margin: .25rem 0 1rem; }
+h2 { font-size: 1.15rem; margin: 0 0 .5rem; }
+
+.tarjeta {
+    background: #fff;
+    border-radius: .6rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+}
+
+/* Formularios: un campo por fila, a todo el ancho */
+.formulario { display: flex; flex-direction: column; gap: .75rem; }
+label { display: flex; flex-direction: column; gap: .25rem; font-weight: 600; }
+fieldset { min-width: 0; margin: 0; padding: .75rem; border: 1px solid #d0d7de; border-radius: .5rem; }
+legend { padding: 0 .25rem; font-weight: 600; }
+input, select, textarea {
+    width: 100%;
+    padding: .6rem;
+    font: inherit;
+    border: 1px solid #d0d7de;
+    border-radius: .4rem;
+    background: #fff;
+}
+
+/* Botones con área táctil cómoda */
+button, .boton {
+    display: inline-block;
+    min-height: 2.75rem;
+    padding: .6rem 1rem;
+    font: inherit;
+    color: #fff;
+    background: #2f6f4f;
+    border: 0;
+    border-radius: .4rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+button.secundario { color: #1f2328; background: #e6e9ed; }
+button.peligro { background: #b42318; }
+button.enlace { min-height: 0; padding: 0; background: none; text-decoration: underline; }
+
+/* Mensajes */
+.error { margin: 0 0 .75rem; padding: .6rem .75rem; color: #8a1c13; background: #fdecea; border-radius: .4rem; }
+.aviso { margin: 0 0 .75rem; padding: .6rem .75rem; background: #e8f3ee; border-radius: .4rem; }
+
+/* Listas de tareas: cada fila se acomoda en varias líneas si no entra */
+.lista { margin: 0; padding: 0; list-style: none; }
+.lista > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .6rem 0;
+    border-top: 1px solid #eef0f2;
+}
+.lista > li:first-child { border-top: 0; }
+.acciones { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* Código de hogar */
+.codigo { font-family: ui-monospace, monospace; font-size: 1.6rem; font-weight: 700; letter-spacing: .2em; }
+.ayuda { margin: 0; font-size: .9rem; color: #4b5563; }
+
+/* Opciones de radio en una fila: el control a la izquierda del texto */
+label.opcion { flex-direction: row; align-items: center; gap: .5rem; font-weight: 400; }
+label.opcion input { width: auto; }
+
+/* Sección de cada mascota en el estado del día */
+.mascota > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem; }
+
+/* Formulario para confirmar un cumplimiento, dentro de la fila de la instancia */
+.form-cumplir { display: flex; flex-wrap: wrap; align-items: end; gap: .5rem; width: 100%; }
+.form-cumplir label { flex: 1 1 8rem; }
+a.boton.secundario { color: #1f2328; background: #e6e9ed; }
+
+/* Resumen por mascota */
+.resumen { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin: .5rem 0 .75rem; font-size: .9rem; color: #4b5563; }
+.resumen dt { font-weight: 600; }
+.resumen dd { margin: 0; }
+h3 { font-size: 1rem; margin: 1rem 0 .25rem; }
+
+/* Marca de una instancia vencida (FR-019) */
+.marca { display: inline-block; margin-left: .25rem; padding: .1rem .5rem; font-size: .8rem; font-weight: 700; color: #8a1c13; background: #fdecea; border-radius: 1rem; }

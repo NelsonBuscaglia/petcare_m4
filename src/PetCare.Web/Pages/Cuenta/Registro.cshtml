@@ -1,0 +1,31 @@
+@page
+@model PetCare.Web.Pages.Cuenta.RegistroModel
+@{
+    ViewData["Title"] = "Registrarse";
+}
+
+@if (Model.CodigoCreado is not null)
+{
+    <h1>Hogar creado</h1>
+    <div class="tarjeta">
+        <p>Este es el código de tu hogar. Compartilo con quienes quieras sumar:</p>
+        <p class="codigo">@Model.CodigoCreado</p>
+        <a class="boton" href="/">Ir al estado del día</a>
+    </div>
+}
+else
+{
+    <h1>Registrarse</h1>
+    @if (Model.Error is not null)
+    {
+        <p class="error">@Model.Error</p>
+    }
+    <form method="post" class="formulario tarjeta">
+        <label>Email <input name="Email" value="@Model.Email" inputmode="email" autocomplete="email" /></label>
+        <label>Contraseña <input name="Password" type="password" autocomplete="new-password" /></label>
+        <label>Código de hogar <input name="CodigoHogar" value="@Model.CodigoHogar" autocapitalize="characters" autocomplete="off" /></label>
+        <p class="ayuda">Si sos la primera persona, dejalo vacío: se crea el hogar.</p>
+        <button type="submit">Registrarme</button>
+    </form>
+    <p>¿Ya tenés cuenta? <a href="/Cuenta/Login">Iniciá sesión</a></p>
+}

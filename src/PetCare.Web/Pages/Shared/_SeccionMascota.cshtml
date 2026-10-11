@@ -1,0 +1,77 @@
+@model PetCare.Web.Pages.SeccionMascotaVista
+@inject RelojHogar Reloj
+@{
+    var seccion = Model.Seccion;
+    var resumen = seccion.Resumen;
+}
+
+<section class="tarjeta mascota" id="mascota-@seccion.MascotaId">
+    <header>
+        <h2>@seccion.Nombre</h2>
+        <a href="/Mascotas/@seccion.MascotaId/Deberes">Deberes</a>
+    </header>
+    @if (Model.Error is not null)
+    {
+        <p class="error">@Model.Error</p>
+    }
+
+    @* Resumen de la mascota (FR-034). *@
+    <dl class="resumen">
+        <div><dt>Paseos de hoy</dt><dd>@resumen.PaseosDeHoy</dd></div>
+        <div><dt>Última comida</dt><dd>@(resumen.UltimaComida is { } comida ? Formato.Momento(comida) : "ninguna registrada")</dd></div>
+        <div><dt>Último paseo</dt><dd>@(resumen.UltimoPaseo is { } paseo ? Formato.Momento(paseo) : "ninguno registrado")</dd></div>
+    </dl>
+
+    @if (seccion.SinTareasPendientes)
+    {
+        <p class="aviso">No hay tareas pendientes.</p>
+    }
+    else
+    {
+        <ul class="lista">
+            @foreach (var instancia in seccion.Instancias)
+            {
+                <li id="instancia-@instancia.Id">
+                    <span>
+                        @* Lo que viene de días anteriores muestra su día: medicación, baño o visita/estudio (FR-022, FR-023). *@
+                        <strong>@(instancia.Dia == Reloj.Hoy ? "" : Formato.Fecha(instancia.Dia) + " ")@Formato.Hora(instancia.Hora)</strong>
+                        · @Formato.Tipo(instancia.Tipo, instancia.Subtipo)
+                        @if (instancia.Marca == PetCare.Web.Servicios.MarcaInstancia.Pendiente)
+                        {
+                            <span class="marca">pendiente</span>
+                        }
+                        else if (instancia.Marca == PetCare.Web.Servicios.MarcaInstancia.NoCumplido)
+                        {
+                            <span class="marca">no cumplido</span>
+                        }
+                    </span>
+                    @* Primer toque del cumplimiento (FR-043). *@
+                    <div class="acciones">
+                        <button hx-get="@($"/?handler=FormCumplir&instanciaId={instancia.Id}")"
+                                hx-target="#instancia-@instancia.Id" hx-swap="innerHTML">Hecho</button>
+                        <button class="secundario" hx-post="/?handler=BajaInstancia" hx-vals='{"instanciaId": @instancia.Id}'
+                                hx-target="#mascota-@seccion.MascotaId" hx-swap="outerHTML"
+                                hx-confirm="¿Dar de baja esta tarea? No se puede deshacer.">Dar de baja</button>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+
+    @if (seccion.RegistrosDeHoy.Count > 0)
+    {
+        @* Registros de hoy, que se pueden eliminar si se cargaron por error (FR-030). *@
+        <h3>Registrado hoy</h3>
+        <ul class="lista">
+            @foreach (var registro in seccion.RegistrosDeHoy)
+            {
+                <li>
+                    <span>@(registro.Hora is { } hora ? Formato.Hora(hora) + " · " : "")@Formato.Tipo(registro.Tipo)</span>
+                    <button class="secundario" hx-post="/?handler=EliminarRegistro" hx-vals='{"registroId": @registro.Id}'
+                            hx-target="#mascota-@seccion.MascotaId" hx-swap="outerHTML"
+                            hx-confirm="¿Eliminar este registro?">Eliminar</button>
+                </li>
+            }
+        </ul>
+    }
+</section>

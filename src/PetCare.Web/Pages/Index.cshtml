@@ -1,0 +1,21 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Estado del día";
+}
+
+<h1>Estado del día</h1>
+
+<div id="mensajes"></div>
+
+@* Se pide de nuevo cada 10 s para ver los cambios de otros cuidadores y las marcas nuevas en ≤ 15 s
+   (FR-035, RNF-04, R6); se saltea mientras hay un cumplimiento a medio confirmar en pantalla. *@
+<div id="estado-del-dia" hx-get="/?handler=Refresco"
+     hx-trigger="every 10s [!document.querySelector('.form-cumplir')]" hx-swap="innerHTML">
+    <partial name="_EstadoDelDia" model="Model.Estado" />
+</div>
+
+@if (!Model.Estado.SinMascotas)
+{
+    <p><a href="/Mascotas/Nueva">Registrar otra mascota</a></p>
+}

@@ -1,0 +1,33 @@
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    // HTMX envía este token en cada solicitud que modifica datos (R12).
+    var tokenAntiforgery = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - PetCare</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="~/lib/htmx/htmx.min.js" asp-append-version="true"></script>
+</head>
+<body hx-headers='{"RequestVerificationToken": "@tokenAntiforgery"}'>
+    <header class="barra">
+        <a class="logo" href="/">PetCare</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <nav class="menu">
+                <a href="/Hogar/Codigo">Código de hogar</a>
+                <form method="post" action="/Cuenta/Logout">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="enlace">Salir</button>
+                </form>
+            </nav>
+        }
+    </header>
+    <main class="contenido">
+        @RenderBody()
+    </main>
+</body>
+</html>

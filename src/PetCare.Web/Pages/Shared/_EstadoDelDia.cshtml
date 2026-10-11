@@ -1,0 +1,15 @@
+@model PetCare.Web.Servicios.EstadoDelDia
+
+@if (Model.SinMascotas)
+{
+    @* Hogar sin mascotas: se indica y se ofrece registrar una (FR-053). *@
+    <div class="tarjeta">
+        <p>No hay mascotas registradas en el hogar.</p>
+        <a class="boton" href="/Mascotas/Nueva">Registrar una mascota</a>
+    </div>
+}
+
+@foreach (var seccion in Model.Mascotas)
+{
+    <partial name="_SeccionMascota" model="new PetCare.Web.Pages.SeccionMascotaVista(seccion)" />
+}

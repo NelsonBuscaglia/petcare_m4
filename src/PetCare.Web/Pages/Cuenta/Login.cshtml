@@ -1,0 +1,17 @@
+@page
+@model PetCare.Web.Pages.Cuenta.LoginModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<h1>Iniciar sesión</h1>
+@if (Model.Error is not null)
+{
+    <p class="error">@Model.Error</p>
+}
+<form method="post" class="formulario tarjeta">
+    <label>Email <input name="Email" value="@Model.Email" inputmode="email" autocomplete="email" /></label>
+    <label>Contraseña <input name="Password" type="password" autocomplete="current-password" /></label>
+    <button type="submit">Entrar</button>
+</form>
+<p>¿Primera vez? <a href="/Cuenta/Registro">Registrate</a></p>

@@ -44,9 +44,9 @@ en el parcial con la hora propuesta. Dos toques en el caso por defecto.
 
 | Ruta | Método | Entrada | Resultado |
 |---|---|---|---|
-| `/Mascotas/Nueva` | GET/POST | `Nombre` | Registra la mascota (FR-007) o rechaza nombre repetido con motivo |
+| `/Mascotas/Nueva` | GET/POST | `Nombre` | Registra la mascota con el nombre sin espacios al principio ni al final (FR-007) o rechaza nombre vacío o repetido con motivo |
 | `/Mascotas/{id}/Deberes` | GET | — | Configuración de deberes: deberes activos con sus datos y máximo de días entre baños (FR-008, FR-012) |
-| `/Mascotas/{id}/Deberes?handler=MaxBanos` | POST | `MaxDiasEntreBanos` | Define o modifica el máximo (FR-008) |
+| `/Mascotas/{id}/Deberes?handler=MaxBanos` | POST | `MaxDiasEntreBanos` | Define o modifica el máximo (FR-008) o rechaza con motivo un valor que no sea un número entero mayor que 0 |
 | `/Mascotas/{id}/Deberes?handler=AltaProgramable` | POST | `Tipo`, `Modalidad`, `HoraInicio`, `IntervaloHoras?`, `Recurrencia`, `HastaDia?` | Alta y generación inmediata de las instancias de hoy (FR-009, FR-010, FR-018) |
 | `/Mascotas/{id}/Deberes?handler=AltaPuntual` | POST | `Tipo`, `Subtipo?`, `Dia`, `Hora` | Alta de baño o visita/estudio y su instancia (FR-011) |
 | `/Mascotas/{id}/Deberes?handler=Baja` | POST | `DeberId` | Baja definitiva del deber y de sus instancias sin cumplir (FR-013) |
@@ -60,8 +60,10 @@ en el parcial con la hora propuesta. Dos toques en el caso por defecto.
 | Contraseña corta | "La contraseña debe tener al menos 8 caracteres." |
 | Login fallido | "El email o la contraseña son incorrectos." |
 | Sin sesión (o sesión vencida) | "Iniciá sesión para continuar." (en la pantalla de login) |
+| Nombre de mascota vacío o con solo espacios | "El nombre de la mascota no puede estar vacío." |
 | Nombre de mascota repetido | "Ya existe una mascota con ese nombre." |
 | N fuera de rango | "N debe ser un número entero entre 1 y 23." |
+| Máximo de días entre baños no positivo o no entero | "El máximo de días entre baños debe ser un número entero mayor que 0." |
 | Fecha pasada | "La fecha no puede ser anterior a hoy." |
 | Visita/estudio sin subtipo | "Elegí el subtipo: veterinario, estudio, vacuna o intervención médica." |
 | Hora real futura | "La hora no puede ser posterior a la actual." |

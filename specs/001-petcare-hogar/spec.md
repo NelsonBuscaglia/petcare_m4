@@ -31,6 +31,15 @@ en *cursiva* se definen en el Glosario del PRD, que se aplica tal cual a este sp
   RF-01l, RF-02d, RF-23c, RF-25, RF-32e, RF-35, RF-36, RF-37 a RF-37c, RF-38 a RF-38c) y a este
   spec.
 
+### Session 2026-10-11
+
+- Durante la implementación se decidió no aceptar nombres de mascota vacíos o con solo espacios,
+  y quitar los espacios del principio y del final del nombre. Se incorporó a `PRD.md` (RF-04c,
+  RF-04d; AC-06d a AC-06g, AC-63e) y a este spec (FR-007, escenario 1 de US2).
+- También se decidió rechazar un máximo de días entre baños que no sea un número entero mayor
+  que 0. Se incorporó a `PRD.md` (RF-05c; AC-08b, AC-07b, AC-63f) y a este spec (FR-008,
+  escenario 5 de US5).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Sumarse al hogar compartido (Priority: P1)
@@ -105,7 +114,11 @@ todos los días y verificar en el estado del día las cuatro instancias de hoy y
 1. **Given** un hogar sin mascotas, **When** se registra una mascota, **Then** el estado del día
    muestra una sección con su nombre; un segundo registro con el mismo nombre (sin distinguir
    mayúsculas) se rechaza informando que ya existe una mascota con ese nombre (AC-06, AC-06b,
-   AC-06c, AC-63); sin mascotas, el estado del día lo indica y ofrece registrar una (AC-65).
+   AC-06c, AC-63); un nombre vacío o con solo espacios se rechaza informando que el nombre no
+   puede estar vacío (AC-06d, AC-06e, AC-63e); los espacios al principio y al final se quitan,
+   así que "  Firulais  " se registra como "Firulais" y "Firulais " se rechaza si ya existe
+   Firulais (AC-06f, AC-06g); sin mascotas, el estado del día lo indica y ofrece registrar una
+   (AC-65).
 2. **Given** "paseo cada 4 horas desde las 08:00, todos los días", **When** se consulta el estado
    a las 07:00, **Then** se ven exactamente las instancias de 08:00, 12:00, 16:00 y 20:00 (AC-10).
 3. **Given** el alta de un deber cada N horas, **When** se ingresa N = 0 o N = 24, **Then** el
@@ -236,7 +249,9 @@ ese día, que aparece sin marca antes de la hora y "no cumplido" después.
 4. **Given** una visita/estudio de hace 3 días sin cumplir, **When** se consulta hoy, **Then**
    aparece "no cumplido"; al registrar su cumplimiento, desaparece (AC-45, AC-46, AC-16).
 5. **Given** una mascota sin deberes, **When** se define y luego se modifica el máximo de días
-   entre baños, **Then** la configuración de deberes muestra el valor vigente (AC-08, AC-07).
+   entre baños, **Then** la configuración de deberes muestra el valor vigente (AC-08, AC-07); un
+   valor que no sea un número entero mayor que 0 (por ejemplo 0 o −5) se rechaza informando el
+   motivo y el máximo no cambia (AC-08b, AC-07b, AC-63f).
 
 ---
 
@@ -426,10 +441,13 @@ historias anteriores.
 
 **Mascotas**
 
-- **FR-007** (RF-04, RF-04b): El sistema DEBE permitir registrar mascotas indicando su nombre y
-  rechazar un nombre repetido en el hogar, sin distinguir mayúsculas de minúsculas.
-- **FR-008** (RF-05, RF-05b): El sistema DEBE permitir definir y modificar, desde la
-  configuración de deberes, un máximo de días entre baños por mascota, sin requerir un deber.
+- **FR-007** (RF-04, RF-04b, RF-04c, RF-04d): El sistema DEBE permitir registrar mascotas
+  indicando su nombre, quitando los espacios al principio y al final para guardarlo y
+  compararlo; DEBE rechazar un nombre vacío o con solo espacios, y un nombre repetido en el
+  hogar, sin distinguir mayúsculas de minúsculas.
+- **FR-008** (RF-05, RF-05b, RF-05c): El sistema DEBE permitir definir y modificar, desde la
+  configuración de deberes, un máximo de días entre baños por mascota, sin requerir un deber, y
+  DEBE rechazar un valor que no sea un número entero mayor que 0.
 
 **Deberes**
 
@@ -568,8 +586,9 @@ historias anteriores.
 - **Cuidador**: persona registrada con email (único, sin distinguir mayúsculas) y contraseña
   (de 8 caracteres o más);
   pertenece al hogar y ve y modifica todos sus datos.
-- **Mascota**: pertenece al hogar; tiene nombre (único en el hogar, sin distinguir mayúsculas),
-  fecha de alta y, opcionalmente, un máximo de días entre baños.
+- **Mascota**: pertenece al hogar; tiene nombre (no vacío, sin espacios al principio ni al final,
+  único en el hogar, sin distinguir mayúsculas),
+  fecha de alta y, opcionalmente, un máximo de días entre baños (número entero mayor que 0).
 - **Deber de cuidado**: pertenece a una mascota; tiene tipo (comida, paseo, medicación, baño,
   visita/estudio), subtipo si es visita/estudio, modalidad (hora fija o cada N horas desde una
   hora de inicio) y recurrencia (solo para hoy, todos los días, hasta una fecha) si es
