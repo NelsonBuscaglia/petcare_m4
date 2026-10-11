@@ -71,6 +71,16 @@ public class DeberesModel(PetCareDbContext db, DeberesService deberes, MascotasS
         return Redirect($"/Mascotas/{id}/Deberes");
     }
 
+    /// <summary>Baja definitiva de un deber de la mascota (FR-013).</summary>
+    public async Task<IActionResult> OnPostBajaAsync(int id, int deberId)
+    {
+        if (!await CargarAsync(id)) return NotFound();
+
+        // Solo deberes activos de esta mascota; si otro cuidador ya lo dio de baja, se vuelve a la configuración.
+        if (Activos.Any(d => d.Id == deberId)) await deberes.DarDeBajaAsync(deberId);
+        return Redirect($"/Mascotas/{id}/Deberes");
+    }
+
     public async Task<IActionResult> OnPostMaxBanosAsync(int id)
     {
         if (!await CargarAsync(id)) return NotFound();

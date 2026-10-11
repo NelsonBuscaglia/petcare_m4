@@ -19,6 +19,10 @@
             {
                 <li>
                     <span><strong>@Formato.Tipo(deber.Tipo, deber.Subtipo)</strong> · @Formato.Programacion(deber)</span>
+                    <form method="post" asp-page-handler="Baja" onsubmit="return confirm('¿Dar de baja este deber? No se puede deshacer.')">
+                        <input type="hidden" name="deberId" value="@deber.Id" />
+                        <button type="submit" class="secundario">Dar de baja</button>
+                    </form>
                 </li>
             }
         </ul>

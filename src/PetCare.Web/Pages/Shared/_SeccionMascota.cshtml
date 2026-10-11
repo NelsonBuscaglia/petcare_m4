@@ -46,8 +46,13 @@
                         }
                     </span>
                     @* Primer toque del cumplimiento (FR-043). *@
-                    <button hx-get="@($"/?handler=FormCumplir&instanciaId={instancia.Id}")"
-                            hx-target="#instancia-@instancia.Id" hx-swap="innerHTML">Hecho</button>
+                    <div class="acciones">
+                        <button hx-get="@($"/?handler=FormCumplir&instanciaId={instancia.Id}")"
+                                hx-target="#instancia-@instancia.Id" hx-swap="innerHTML">Hecho</button>
+                        <button class="secundario" hx-post="/?handler=BajaInstancia" hx-vals='{"instanciaId": @instancia.Id}'
+                                hx-target="#mascota-@seccion.MascotaId" hx-swap="outerHTML"
+                                hx-confirm="¿Dar de baja esta tarea? No se puede deshacer.">Dar de baja</button>
+                    </div>
                 </li>
             }
         </ul>

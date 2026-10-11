@@ -11,7 +11,8 @@ namespace PetCare.Web.Pages;
 /// Estado del día: la pantalla que se muestra al iniciar sesión (FR-033), con los handlers HTMX
 /// que devuelven la sección de una mascota (contracts/ui-routes.md).
 /// </summary>
-public class IndexModel(EstadoDelDiaQuery consulta, CumplimientosService cumplimientos, PetCareDbContext db, RelojHogar reloj)
+public class IndexModel(
+    EstadoDelDiaQuery consulta, CumplimientosService cumplimientos, BajasInstanciaService bajas, PetCareDbContext db, RelojHogar reloj)
     : PageModel
 {
     public EstadoDelDia Estado { get; private set; } = new([]);
@@ -39,6 +40,16 @@ public class IndexModel(EstadoDelDiaQuery consulta, CumplimientosService cumplim
     {
         var mascotaId = await db.Instancias.Where(i => i.Id == instanciaId).Select(i => (int?)i.Deber!.MascotaId).SingleOrDefaultAsync();
         var resultado = await cumplimientos.CumplirAsync(instanciaId, hora);
+        if (mascotaId is null) return MensajeGeneral(resultado.Error!);
+
+        return await SeccionAsync(mascotaId.Value, resultado.Error);
+    }
+
+    /// <summary>Da de baja una instancia (y su deber si es de instancia única) y devuelve la sección (FR-015, FR-016).</summary>
+    public async Task<IActionResult> OnPostBajaInstanciaAsync(int instanciaId)
+    {
+        var mascotaId = await db.Instancias.Where(i => i.Id == instanciaId).Select(i => (int?)i.Deber!.MascotaId).SingleOrDefaultAsync();
+        var resultado = await bajas.DarDeBajaAsync(instanciaId);
         if (mascotaId is null) return MensajeGeneral(resultado.Error!);
 
         return await SeccionAsync(mascotaId.Value, resultado.Error);
