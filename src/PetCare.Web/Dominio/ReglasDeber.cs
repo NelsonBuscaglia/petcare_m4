@@ -13,13 +13,10 @@ public static class ReglasDeber
     {
         if (deber.DadoDeBajaUtc is not null) return false;
 
-        var tieneInstanciaVigente = instancias.Any(i => i.Estado == EstadoInstancia.Vigente && !Expirada(deber, i, hoy));
+        var tieneInstanciaVigente = instancias.Any(i =>
+            i.Estado == EstadoInstancia.Vigente && !ReglasVencimiento.EstaExpirada(i, deber.Tipo, hoy));
         var puedeGenerar = deber.Recurrencia == Recurrencia.TodosLosDias && (deber.HastaDia is null || deber.HastaDia > hoy);
 
         return tieneInstanciaVigente || puedeGenerar;
     }
-
-    /// <summary>Comida y paseo no cumplidos expiran al terminar su día (FR-021).</summary>
-    private static bool Expirada(Deber deber, Instancia instancia, DateOnly hoy) =>
-        deber.Tipo is TipoDeber.Comida or TipoDeber.Paseo && instancia.Dia < hoy;
 }
