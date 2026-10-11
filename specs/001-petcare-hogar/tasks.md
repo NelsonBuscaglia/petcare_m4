@@ -209,7 +209,7 @@ aparece sin marca antes de la hora y "no cumplido" después.
 
 - [X] T061 [P] [US5] Escribir `tests/PetCare.Tests/Servicios/DeberesPuntualesTests.cs`: AC-17b y AC-17c (fecha anterior a hoy → "La fecha no puede ser anterior a hoy."), AC-17d (hoy con hora pasada se acepta y queda "no cumplido"), AC-18 (subtipos válidos), AC-18b (visita/estudio sin subtipo → "Elegí el subtipo: veterinario, estudio, vacuna o intervención médica."), AC-19b parte baño, AC-19d (baño cumplido no está activo), AC-16 (vacuna cumplida no aparece mañana)
 - [X] T062 [P] [US5] Escribir `tests/PetCare.Tests/Servicios/MaxBanosTests.cs`: AC-08 (definir 20 sin deberes) y AC-07 (modificar a 30)
-- [ ] T063 [P] [US5] Escribir `tests/PetCare.Tests/Servicios/PuntualesEstadoTests.cs`: AC-17 (baño del viernes aparece el viernes sin marca antes de las 15:00), AC-39b (turno en 3 días no aparece), AC-40 (subtipo visible), AC-45 y AC-46 ("no cumplido" de hace 3 días; al cumplirlo desaparece), AC-33 y AC-33b (paseo y baño del día juntos; cumplir el baño deja el paseo), AC-36 (cumplir un baño no pide hora), AC-39 (escenario combinado del estado del día)
+- [X] T063 [P] [US5] Escribir `tests/PetCare.Tests/Servicios/PuntualesEstadoTests.cs`: AC-17 (baño del viernes aparece el viernes sin marca antes de las 15:00), AC-39b (turno en 3 días no aparece), AC-40 (subtipo visible), AC-45 y AC-46 ("no cumplido" de hace 3 días; al cumplirlo desaparece), AC-33 y AC-33b (paseo y baño del día juntos; cumplir el baño deja el paseo), AC-36 (cumplir un baño no pide hora), AC-39 (escenario combinado del estado del día)
 - [ ] T064 [P] [US5] Escribir en `tests/PetCare.Tests/Web/AccesoMascotasTests.cs` el caso AC-05i (cambiar el máximo sin sesión → rechazo y sigue en 20)
 
 ### Implementation for User Story 5
