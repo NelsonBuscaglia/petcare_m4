@@ -18,6 +18,7 @@ builder.Services.AddDbContext<PetCareDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("PetCare")));
 
 builder.Services.AddScoped<RegistroService>();
+builder.Services.AddScoped<MascotasService>();
 
 // Los textos en español (á, ñ, ¿…) se escriben tal cual en el HTML, sin convertirlos en entidades.
 builder.Services.Configure<WebEncoderOptions>(options =>

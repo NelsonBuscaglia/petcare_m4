@@ -9,4 +9,5 @@ public static class Mensajes
     public const string PasswordCorta = "La contraseña debe tener al menos 8 caracteres.";
     public const string LoginFallido = "El email o la contraseña son incorrectos.";
     public const string SinSesion = "Iniciá sesión para continuar.";
+    public const string MascotaRepetida = "Ya existe una mascota con ese nombre.";
 }
