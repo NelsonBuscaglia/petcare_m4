@@ -46,4 +46,8 @@ public class Deber
 
     /// <summary>Comida, paseo o medicación; baño y visita/estudio son puntuales (FR-009, FR-011).</summary>
     public bool EsProgramable => Tipo is TipoDeber.Comida or TipoDeber.Paseo or TipoDeber.Medicacion;
+
+    /// <summary>Tiene una sola instancia: puntual, o programable de hora fija "solo para hoy" (FR-016).</summary>
+    public bool EsDeInstanciaUnica =>
+        !EsProgramable || (Modalidad == Dominio.Modalidad.HoraFija && Recurrencia == Dominio.Recurrencia.SoloHoy);
 }
