@@ -62,7 +62,7 @@ historias.
 ### Tests primero
 
 - [X] T008 [P] Escribir `tests/PetCare.Tests/Dominio/RelojHogarTests.cs`: `Hoy` y la hora del hogar se calculan con offset fijo −03:00 sin horario de verano (FR-044); 03:05 UTC es 00:05 del nuevo día (AC-28), 02:59 UTC es 23:59 del día anterior (AC-28b); conversión ida y vuelta `Dia`+`Hora` ↔ instante UTC
-- [ ] T009 Crear la infraestructura de tests en `tests/PetCare.Tests/Infra/BaseDeDatosDePrueba.cs` (conexión SQLite `DataSource=:memory:` abierta durante el test y esquema creado aplicando las migraciones de `PetCareDbContext`, R11) y `tests/PetCare.Tests/Infra/FakeEmailSender.cs` (registra cada envío con destinatarios, asunto y cuerpo; permite programar rechazos o demoras por intento); el esquema necesita la migración de T018
+- [ ] T009 Crear la infraestructura de tests en `tests/PetCare.Tests/Infra/BaseDeDatosDePrueba.cs` (conexión SQLite `DataSource=:memory:` abierta durante el test y esquema creado aplicando las migraciones de `PetCareDbContext`, R11); el esquema necesita la migración de T018. `FakeEmailSender` se crea en T098, junto con `IEmailSender` (US8)
 
 ### Implementación
 
@@ -76,7 +76,7 @@ historias.
 - [ ] T017 Crear `src/PetCare.Web/Datos/PetCareDbContext.cs` con `DbSet` de las 7 entidades y la configuración de "Índices y restricciones" de data-model: únicos en `Cuidador.EmailNormalizado`, `Mascota (HogarId, NombreNormalizado)`, `Instancia (DeberId, ProgramadaUtc)`, `RegistroCumplimiento.InstanciaId`, `Notificacion.Clave`; índices en `Instancia (Estado, Dia)`, `RegistroCumplimiento.Dia`, `Notificacion.Estado`; check `IntervaloHoras BETWEEN 1 AND 23`; enums guardados como texto
 - [ ] T018 Generar la migración inicial con `dotnet ef migrations add Inicial --project src/PetCare.Web` en `src/PetCare.Web/Datos/Migrations/` y verificar que T009 crea el esquema con ella
 - [ ] T019 Configurar `src/PetCare.Web/Program.cs` (solo registro de servicios, sin lógica propia): `TimeProvider.System` y `RelojHogar` en DI; `PetCareDbContext` con SQLite; autenticación por cookie con `ExpireTimeSpan` 30 días, `SlidingExpiration = false` y `TimeProvider` inyectado (R9); política de autorización por defecto que exige usuario autenticado, con `/Cuenta/Registro` y `/Cuenta/Login` anónimos; exponer `public partial class Program` para los tests. Los eventos de la cookie se implementan en US1 después de sus tests
-- [ ] T020 Crear `tests/PetCare.Tests/Infra/PetCareWebFactory.cs` (`WebApplicationFactory<Program>` que reemplaza `TimeProvider` por un `FakeTimeProvider`, `IEmailSender` por `FakeEmailSender` y la base por la de T009) y un helper para registrar e iniciar sesión con cookies
+- [ ] T020 Crear `tests/PetCare.Tests/Infra/PetCareWebFactory.cs` (`WebApplicationFactory<Program>` que reemplaza `TimeProvider` por un `FakeTimeProvider` y la base por la de T009; el reemplazo de `IEmailSender` lo agrega T098) y un helper para registrar e iniciar sesión con cookies
 - [ ] T021 [P] Crear `src/PetCare.Web/Pages/Shared/_Layout.cshtml` y `src/PetCare.Web/wwwroot/css/site.css`: viewport móvil, layout de una columna sin scroll horizontal desde 360 px (FR-042), script de HTMX local y `hx-headers` con el token antiforgery en el `<body>` (R12)
 
 **Checkpoint**: base con migraciones, reloj testeado, autenticación configurada. Pueden empezar
@@ -276,6 +276,7 @@ su momento y no en los casos excluidos.
 
 ### Tests for User Story 8 ⚠️
 
+- [ ] T098 [US8] Crear `tests/PetCare.Tests/Infra/FakeEmailSender.cs` (implementa `IEmailSender`; registra cada envío con destinatarios, asunto y cuerpo; permite programar rechazos o demoras por intento) y agregar a `tests/PetCare.Tests/Infra/PetCareWebFactory.cs` el reemplazo de `IEmailSender` por `FakeEmailSender`; va antes de T081 a T084, que lo usan, y no compila hasta que T085 cree `IEmailSender`
 - [ ] T080 [P] [US8] Escribir `tests/PetCare.Tests/Dominio/PlantillasEmailTests.cs` según contracts/emails.md: AC-64 (vencimiento: mascota, tipo, fecha y hora), AC-64b (recordatorio: mascota, tipo, fecha y hora del turno), subtipo en vencimiento (AC-43) y recordatorio (AC-42)
 - [ ] T081 [P] [US8] Escribir `tests/PetCare.Tests/Programado/EmailsVencimientoTests.cs` ejecutando ciclos con `FakeTimeProvider`: AC-48 (a todos los cuidadores ≤ 09:20), AC-49 (cumplida a las 09:05, sin email), AC-43 y AC-50 (visita/estudio ≤ 10:05), AC-14, AC-17d y AC-28c (generada vencida, sin email), AC-38b (registro erróneo eliminado a las 10:00 → email ≤ 10:05), AC-38c (con email ya aceptado no hay segundo), AC-20b parte email (baja del deber, sin emails en el día)
 - [ ] T082 [P] [US8] Escribir `tests/PetCare.Tests/Programado/EmailsRecordatorioTests.cs`: AC-51 (≤ 15:05 del miércoles), AC-51b (exactamente uno), AC-51c (dado de baja antes, ninguno), AC-52 (alta con menos de 48 h, ninguno), AC-52b (alta con 48 h exactas, uno), AC-42
@@ -357,6 +358,7 @@ tardar a las 07:05; ninguno en los casos excluidos.
 
 - Setup: T005, T006, T007.
 - Foundational: T008; las entidades T011 a T016; T021 (T009 espera la migración de T018).
+- US8: T098 primero (crea `FakeEmailSender`); después, T080 a T084 en paralelo.
 - En cada historia, todas las tareas de test marcadas [P] entre sí, y las de dominio [P]
   (por ejemplo T039 y T040, o T085, T086 y T087).
 - US4, US5 y US6 pueden avanzar en paralelo una vez terminada US3, coordinando los cambios en
