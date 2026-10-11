@@ -42,6 +42,19 @@ public sealed class Escenario : IDisposable
         return resultado.Valor;
     }
 
+    public async Task<Resultado<int>> AltaPuntual(int mascotaId, TipoDeber tipo, DateOnly dia, string hora, SubtipoVisita? subtipo = null)
+    {
+        await using var db = Base.Contexto();
+        return await new DeberesService(db, Base.Reloj).AltaPuntualAsync(new AltaPuntual(mascotaId, tipo, subtipo, dia, TimeOnly.Parse(hora)));
+    }
+
+    public async Task<int> Puntual(int mascotaId, TipoDeber tipo, DateOnly dia, string hora, SubtipoVisita? subtipo = null)
+    {
+        var resultado = await AltaPuntual(mascotaId, tipo, dia, hora, subtipo);
+        Assert.True(resultado.Ok, resultado.Error);
+        return resultado.Valor;
+    }
+
     public async Task<IReadOnlyList<Deber>> DeberesActivos(int mascotaId)
     {
         await using var db = Base.Contexto();
