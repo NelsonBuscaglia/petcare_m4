@@ -75,4 +75,21 @@ public class AccesoMascotasTests : IDisposable
         Assert.Empty(db.Deberes);
         Assert.Empty(db.Instancias);
     }
+
+    [Fact]
+    public async Task AC_05i_cambiar_el_maximo_de_dias_entre_banos_sin_sesion_se_rechaza_y_sigue_en_20()
+    {
+        using (var db = _app.Base.Contexto())
+        {
+            db.Mascotas.Single(m => m.Id == _firulais).MaxDiasEntreBanos = 20;
+            db.SaveChanges();
+        }
+
+        var response = await _anonimo.PostAsync($"/Mascotas/{_firulais}/Deberes?handler=MaxBanos",
+            new Dictionary<string, string?> { ["MaxDiasEntreBanos"] = "30" });
+
+        await AssertRechazadoSinDatos(response);
+        using var verificacion = _app.Base.Contexto();
+        Assert.Equal(20, verificacion.Mascotas.Single(m => m.Id == _firulais).MaxDiasEntreBanos);
+    }
 }
