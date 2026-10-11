@@ -51,6 +51,24 @@ public class SesionTests : IDisposable
     }
 
     [Fact]
+    public async Task AC_04e_los_refrescos_automaticos_no_renuevan_la_sesion()
+    {
+        var ana = await AnaConSesionDesdeElDia1();
+        foreach (var dia in new[] { 5, 15, 25, 30 })
+        {
+            Fijar(dia, 10);
+            Assert.Equal(HttpStatusCode.OK, (await ana.GetAsync("/?handler=Refresco", htmx: true)).StatusCode);
+        }
+
+        Fijar(31, 10, 1);
+        var response = await ana.GetAsync("/?handler=Refresco", htmx: true);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Equal("/Cuenta/Login?motivo=sin-sesion", Assert.Single(response.Headers.GetValues("HX-Redirect")));
+        Assert.Empty(await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task FR_005_la_cookie_de_sesion_es_persistente_y_vence_30_dias_despues()
     {
         await AnaConSesionDesdeElDia1();

@@ -260,7 +260,7 @@ sigue y mañana vuelven las cuatro); dar de baja un deber y ver que desaparece.
 ### Tests for User Story 7 ⚠️
 
 - [X] T076 [P] [US7] Escribir `tests/PetCare.Tests/Web/RefrescoTests.cs`: el parcial de `GET /?handler=Refresco` refleja el cumplimiento o la baja de otro cuidador (AC-47, AC-47d) y el paso a "pendiente" o "no cumplido" al avanzar el reloj (AC-47b, AC-47c); la página incluye `hx-trigger="every 10s"` (RNF-04); sin sesión responde 401 con `HX-Redirect` y sin datos (AC-05)
-- [ ] T077 [P] [US7] Agregar a `tests/PetCare.Tests/Web/SesionTests.cs` el caso AC-04e (con solo refrescos automáticos desde el día 1 10:00, el refresco del día 31 10:01 se rechaza sin datos)
+- [X] T077 [P] [US7] Agregar a `tests/PetCare.Tests/Web/SesionTests.cs` el caso AC-04e (con solo refrescos automáticos desde el día 1 10:00, el refresco del día 31 10:01 se rechaza sin datos)
 
 ### Implementation for User Story 7
 
