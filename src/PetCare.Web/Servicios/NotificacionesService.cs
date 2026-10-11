@@ -20,11 +20,15 @@ public sealed class NotificacionesService(
     /// <summary>Plazo desde la condición para entregar el email al servicio de envío (FR-041, RNF-01).</summary>
     public static readonly TimeSpan Ventana = TimeSpan.FromMinutes(5);
 
-    /// <summary>Crea las notificaciones nuevas de vencimiento y de recordatorio.</summary>
+    /// <summary>Hora del hogar del aviso diario de turno de baño (FR-040).</summary>
+    public static readonly TimeOnly HoraAvisoTurnoBano = new(7, 0);
+
+    /// <summary>Crea las notificaciones nuevas de vencimiento, de recordatorio y de aviso de turno de baño.</summary>
     public async Task CrearAsync(CancellationToken ct)
     {
         await CrearVencimientosAsync(ct);
         await CrearRecordatoriosAsync(ct);
+        await CrearAvisosTurnoBanoAsync(ct);
         await db.SaveChangesAsync(ct);
     }
 
@@ -88,6 +92,62 @@ public sealed class NotificacionesService(
             if (await db.Notificaciones.AnyAsync(n => n.Clave == clave, ct)) continue;
             Agregar(TipoNotificacion.Recordatorio, clave, condicion, ahora, deberId: deber.Id);
         }
+    }
+
+    /// <summary>
+    /// Desde las 07:00, un aviso por día para cada mascota que cumple las tres condiciones de
+    /// FR-040. Si se detecta después de las 07:05 (servidor caído, o un baño activo que se dio de
+    /// baja más tarde), nace perdida y el aviso queda para el día siguiente.
+    /// </summary>
+    private async Task CrearAvisosTurnoBanoAsync(CancellationToken ct)
+    {
+        var ahora = reloj.AhoraUtc;
+        var hoy = reloj.Hoy;
+        var condicion = RelojHogar.AUtc(hoy, HoraAvisoTurnoBano);
+        if (ahora < condicion) return;
+
+        var conMaximo = await db.Mascotas.AsNoTracking()
+            .Where(m => m.MaxDiasEntreBanos != null)
+            .Select(m => m.Id)
+            .ToListAsync(ct);
+
+        foreach (var mascotaId in conMaximo)
+        {
+            var clave = $"A:{mascotaId}:{hoy:yyyy-MM-dd}";
+            if (await db.Notificaciones.AnyAsync(n => n.Clave == clave, ct)) continue;
+            if (await EvaluarAvisoAsync(mascotaId, hoy, ct) is null) continue;
+            Agregar(TipoNotificacion.AvisoTurnoBano, clave, condicion, ahora, mascotaId: mascotaId);
+        }
+    }
+
+    /// <summary>
+    /// Si corresponde el aviso de turno de baño de la mascota (FR-040), devuelve su contenido;
+    /// si no, null. Un baño activo es un deber de baño activo según <see cref="ReglasDeber"/>:
+    /// futuro, de hoy o "no cumplido".
+    /// </summary>
+    private async Task<ContenidoEmail?> EvaluarAvisoAsync(int mascotaId, DateOnly hoy, CancellationToken ct)
+    {
+        var mascota = await db.Mascotas.AsNoTracking().SingleAsync(m => m.Id == mascotaId, ct);
+
+        var banos = await db.Deberes.AsNoTracking()
+            .Where(d => d.MascotaId == mascotaId && d.Tipo == TipoDeber.Bano && d.DadoDeBajaUtc == null)
+            .ToListAsync(ct);
+        var idsBanos = banos.Select(d => d.Id).ToList();
+        var vigentes = await db.Instancias.AsNoTracking()
+            .Where(i => idsBanos.Contains(i.DeberId) && i.Estado == EstadoInstancia.Vigente)
+            .ToListAsync(ct);
+        var tieneBanoActivo = banos.Any(d => ReglasDeber.EsActivo(d, vigentes.Where(i => i.DeberId == d.Id), hoy));
+
+        // Último baño registrado: el mayor día de los registros de baño de la mascota (data-model).
+        var ultimoBano = await db.RegistrosCumplimiento.AsNoTracking()
+            .Where(r => r.Instancia!.Deber!.MascotaId == mascotaId && r.Instancia.Deber.Tipo == TipoDeber.Bano)
+            .OrderByDescending(r => r.Dia)
+            .Select(r => (DateOnly?)r.Dia)
+            .FirstOrDefaultAsync(ct);
+
+        return AvisoTurnoBano.Corresponde(mascota, ultimoBano, tieneBanoActivo, hoy)
+            ? PlantillasEmail.AvisoTurnoBano(mascota.Nombre, mascota.MaxDiasEntreBanos!.Value, ultimoBano)
+            : null;
     }
 
     /// <summary>
@@ -157,6 +217,9 @@ public sealed class NotificacionesService(
                     .SingleAsync(d => d.Id == notificacion.DeberId, ct);
                 if (deber.DadoDeBajaUtc is not null) return null;
                 return PlantillasEmail.Recordatorio(deber.Mascota!.Nombre, deber.Tipo, deber.Subtipo, deber.Dia!.Value, deber.Hora!.Value);
+
+            case TipoNotificacion.AvisoTurnoBano:
+                return await EvaluarAvisoAsync(notificacion.MascotaId!.Value, reloj.Hoy, ct);
 
             default:
                 return null;

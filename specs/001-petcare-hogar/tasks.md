@@ -316,7 +316,7 @@ tardar a las 07:05; ninguno en los casos excluidos.
 ### Implementation for User Story 9
 
 - [X] T093 [US9] Implementar `src/PetCare.Web/Dominio/AvisoTurnoBano.cs` (`Corresponde(mascota, fechaUltimoBano, tieneBanoActivo, hoy)`) y la plantilla del aviso en `src/PetCare.Web/Dominio/PlantillasEmail.cs` — hace pasar T091
-- [ ] T094 [US9] Agregar a `src/PetCare.Web/Servicios/NotificacionesService.cs` la creación diaria del aviso a las 07:00 con clave `A:{mascotaId}:{dia}` y `CondicionUtc` = 07:00 de hoy, usando `ReglasDeber.EsActivo` para los baños activos — hace pasar T092
+- [X] T094 [US9] Agregar a `src/PetCare.Web/Servicios/NotificacionesService.cs` la creación diaria del aviso a las 07:00 con clave `A:{mascotaId}:{dia}` y `CondicionUtc` = 07:00 de hoy, usando `ReglasDeber.EsActivo` para los baños activos — hace pasar T092
 
 **Checkpoint**: todas las historias completas.
 
