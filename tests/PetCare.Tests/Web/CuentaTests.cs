@@ -61,6 +61,26 @@ public class CuentaTests : IDisposable
     }
 
     [Fact]
+    public async Task AC_02_el_segundo_cuidador_al_iniciar_sesion_ve_la_seccion_de_la_mascota_A()
+    {
+        var ana = await AnaCreaElHogar();
+        await ana.PostAsync("/Mascotas/Nueva", new Dictionary<string, string?> { ["Nombre"] = "A" });
+        await _app.Cliente().RegistrarAsync("beto@ejemplo.com", "secreta123", CodigoGuardado());
+        var beto = _app.Cliente();
+
+        var login = await beto.IniciarSesionAsync("beto@ejemplo.com", "secreta123");
+
+        Assert.Equal("/", login.Headers.Location?.OriginalString);
+        var estado = await beto.GetAsync("/");
+        Assert.Equal(HttpStatusCode.OK, estado.StatusCode);
+        int mascotaA;
+        using (var db = _app.Base.Contexto()) mascotaA = db.Mascotas.Single(m => m.Nombre == "A").Id;
+        var html = await Html(estado);
+        Assert.Contains($"id=\"mascota-{mascotaA}\"", html);
+        Assert.Contains("<h2>A</h2>", html);
+    }
+
+    [Fact]
     public async Task FR_051_un_registro_rechazado_muestra_el_motivo()
     {
         await AnaCreaElHogar();
