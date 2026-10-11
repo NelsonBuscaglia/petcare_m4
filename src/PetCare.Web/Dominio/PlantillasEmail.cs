@@ -29,6 +29,13 @@ public static class PlantillasEmail
             $"{mascota} tiene {deber.Articulo} {deber.Minuscula} {agendado} para el {FechaHora(dia, hora)}.");
     }
 
+    /// <summary>Indica la mascota, su máximo de días entre baños y la fecha del último baño, o que no hay ninguno.</summary>
+    public static ContenidoEmail AvisoTurnoBano(string mascota, int maximoDias, DateOnly? fechaUltimoBano) =>
+        new(
+            $"PetCare: hay que pedir turno de baño para {mascota}",
+            $"Hay que pedir turno de baño para {mascota}: su máximo es de {maximoDias} días entre baños y "
+                + (fechaUltimoBano is { } fecha ? $"el último baño registrado fue el {fecha:dd/MM/yyyy}." : "no hay baños registrados."));
+
     private static string FechaHora(DateOnly dia, TimeOnly hora) => $"{dia:dd/MM/yyyy} {hora:HH:mm}";
 
     private sealed record NombreDeber(string Mayuscula, string Minuscula, bool Femenino)
