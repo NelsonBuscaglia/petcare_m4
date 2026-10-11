@@ -71,6 +71,7 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - RF-04d: El sistema debe quitar los espacios al principio y al final del nombre de una mascota al registrarla, tanto para guardarlo como para compararlo con los nombres existentes (RF-04b).
 - RF-05: El sistema debe permitir definir de forma opcional, desde la configuración de deberes de cada mascota, la cantidad máxima de días esperados entre un baño y el siguiente, sin necesidad de dar de alta un deber de cuidado.
 - RF-05b: El sistema debe permitir modificar, desde la configuración de deberes de cada mascota, la cantidad máxima de días entre baños ya definida (RF-05).
+- RF-05c: El sistema debe rechazar, al definir (RF-05) o modificar (RF-05b) el máximo de días entre baños, un valor que no sea un número entero mayor que 0.
 
 ### Deberes
 
@@ -213,7 +214,9 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - AC-06f (RF-04d): Dado un hogar sin mascotas registradas, cuando un cuidador registra una mascota con el nombre "  Firulais  " (con espacios al principio y al final), entonces el estado del día muestra una sección con el nombre "Firulais", sin espacios.
 - AC-06g (RF-04d, RF-04b): Dado un hogar con la mascota Firulais registrada, cuando un cuidador intenta registrar otra mascota con el nombre "Firulais " (con un espacio al final), entonces el sistema rechaza el registro y el estado del día sigue mostrando una sola sección para Firulais.
 - AC-08 (RF-05): Dada una mascota sin ningún deber de cuidado dado de alta, cuando un cuidador define 20 días como máximo entre baños y guarda, entonces la configuración de deberes de esa mascota muestra un máximo de 20.
+- AC-08b (RF-05c): Dada una mascota sin máximo de días entre baños definido, cuando un cuidador intenta definir 0 como máximo y guarda, entonces el sistema rechaza la operación y la configuración de deberes de esa mascota sigue sin máximo definido.
 - AC-07 (RF-05b): Dada una mascota con un máximo de 20 días entre baños, cuando un cuidador lo cambia a 30 y guarda, entonces la configuración de deberes de esa mascota muestra un máximo de 30.
+- AC-07b (RF-05c): Dada una mascota con un máximo de 20 días entre baños, cuando un cuidador intenta cambiarlo a −5 y guarda, entonces el sistema rechaza la operación y la configuración de deberes de esa mascota sigue mostrando un máximo de 20.
 
 ### Deberes
 
@@ -339,6 +342,7 @@ Hoy la única forma de resolverlo es preguntando directamente a los demás integ
 - AC-63c (RF-36, RF-23b): Dada una instancia vigente de un deber de comida, cuando a las 10:30 un cuidador registra su cumplimiento cambiando la hora propuesta a 11:00, entonces el sistema rechaza el registro y le informa que la hora no puede ser posterior a la actual.
 - AC-63d (RF-36, RF-01c): Dado un hogar ya existente, cuando una persona intenta registrarse con un código de hogar incorrecto, entonces el sistema rechaza el registro y le informa que el código de hogar es incorrecto.
 - AC-63e (RF-36, RF-04c): Dado un hogar sin mascotas registradas, cuando un cuidador intenta registrar una mascota con el nombre vacío, entonces el sistema rechaza el registro y le informa que el nombre de la mascota no puede estar vacío.
+- AC-63f (RF-36, RF-05c): Dada una mascota sin máximo de días entre baños definido, cuando un cuidador intenta definir 0 como máximo, entonces el sistema rechaza la operación y le informa que el máximo debe ser un número entero mayor que 0.
 
 ### Requerimientos no funcionales
 
