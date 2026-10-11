@@ -28,7 +28,7 @@ img, input, select, textarea, button { max-width: 100%; }
     color: #fff;
 }
 .barra a, .barra .enlace { color: #fff; }
-.marca { font-size: 1.15rem; font-weight: 700; text-decoration: none; }
+.logo { font-size: 1.15rem; font-weight: 700; text-decoration: none; }
 .menu { display: flex; align-items: center; gap: 1rem; }
 .menu form { margin: 0; }
 
