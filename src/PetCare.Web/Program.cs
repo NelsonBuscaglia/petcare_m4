@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.WebEncoders;
 using PetCare.Web.Datos;
 using PetCare.Web.Dominio;
+using PetCare.Web.Infra;
 using PetCare.Web.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,14 +24,16 @@ builder.Services.Configure<WebEncoderOptions>(options =>
     options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 
 // Sesión de 30 días desde la última solicitud (FR-005, R9). La renovación y la respuesta sin
-// sesión se configuran en los eventos de la cookie (US1).
+// sesión están en EventosCookie.
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Cuenta/Login";
         options.ExpireTimeSpan = TimeSpan.FromDays(30);
         options.SlidingExpiration = false;
+        options.EventsType = typeof(EventosCookie);
     });
+builder.Services.AddSingleton<EventosCookie>();
 builder.Services.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
     .Configure<TimeProvider>((options, tiempo) => options.TimeProvider = tiempo);
 
