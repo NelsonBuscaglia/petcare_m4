@@ -1,0 +1,39 @@
+using PetCare.Web.Dominio;
+using PetCare.Web.Dominio.Entidades;
+
+namespace PetCare.Web.Pages;
+
+/// <summary>Textos en español para mostrar datos del dominio en las páginas.</summary>
+public static class Formato
+{
+    public static string Tipo(TipoDeber tipo) => tipo switch
+    {
+        TipoDeber.Comida => "Comida",
+        TipoDeber.Paseo => "Paseo",
+        TipoDeber.Medicacion => "Medicación",
+        TipoDeber.Bano => "Baño",
+        TipoDeber.VisitaEstudio => "Visita/estudio",
+        _ => tipo.ToString(),
+    };
+
+    public static string Hora(TimeOnly hora) => hora.ToString("HH:mm");
+
+    public static string Fecha(DateOnly dia) => dia.ToString("dd/MM/yyyy");
+
+    /// <summary>Los datos con que se dio de alta un deber programable (FR-012).</summary>
+    public static string Programacion(Deber deber)
+    {
+        var partes = new List<string>
+        {
+            deber.Modalidad == Modalidad.CadaNHoras
+                ? $"cada {deber.IntervaloHoras} horas desde las {Hora(deber.HoraInicio!.Value)}"
+                : $"a las {Hora(deber.HoraInicio!.Value)}",
+            deber.Recurrencia == Recurrencia.SoloHoy ? $"solo el {Fecha(deber.CreadoDia)}" : "todos los días",
+        };
+
+        if (deber.Tipo == TipoDeber.Medicacion && deber.Recurrencia == Recurrencia.TodosLosDias)
+            partes.Add(deber.HastaDia is { } hasta ? $"hasta el {Fecha(hasta)}" : "para siempre");
+
+        return string.Join(", ", partes);
+    }
+}

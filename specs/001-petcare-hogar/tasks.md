@@ -141,7 +141,7 @@ días" y ver 08:00, 12:00, 16:00 y 20:00 hoy y mañana.
 - [X] T043 [US2] Implementar `src/PetCare.Web/Servicios/EstadoDelDiaQuery.cs`: modelo de vista por mascota con las instancias vigentes de hoy (FR-033) y el estado vacío del hogar (FR-053) — hace pasar T036
 - [X] T044 [US2] Implementar `src/PetCare.Web/Programado/ProcesadorProgramado.cs` (`EjecutarCicloAsync`, paso 1: generar de forma idempotente las instancias de hoy de los deberes diarios activos, R4/R5) y `src/PetCare.Web/Programado/ProgramadorHostedService.cs` (`PeriodicTimer` de 30 s desde el `TimeProvider`); registrarlos en `Program.cs` — hace pasar T037
 - [X] T045 [P] [US2] Crear `src/PetCare.Web/Pages/Mascotas/Nueva.cshtml(.cs)`: formulario de nombre con el motivo de rechazo (FR-007)
-- [ ] T046 [US2] Crear `src/PetCare.Web/Pages/Mascotas/Deberes.cshtml(.cs)` (ruta `/Mascotas/{id}/Deberes`): deberes activos con sus datos de alta (FR-012) y handler `AltaProgramable` (tipo, modalidad, hora, N, recurrencia, hasta) según contracts/ui-routes.md
+- [X] T046 [US2] Crear `src/PetCare.Web/Pages/Mascotas/Deberes.cshtml(.cs)` (ruta `/Mascotas/{id}/Deberes`): deberes activos con sus datos de alta (FR-012) y handler `AltaProgramable` (tipo, modalidad, hora, N, recurrencia, hasta) según contracts/ui-routes.md
 - [ ] T047 [US2] Completar `src/PetCare.Web/Pages/Index.cshtml(.cs)` y el parcial `src/PetCare.Web/Pages/Shared/_EstadoDelDia.cshtml`: una sección por mascota con sus instancias y enlace a su configuración; sin mascotas, mensaje y enlace a registrar una (FR-053) — hace pasar T038
 
 **Checkpoint**: US1 + US2: mascotas y deberes programables visibles en el estado del día.

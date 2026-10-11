@@ -1,0 +1,60 @@
+@page "/Mascotas/{id:int}/Deberes"
+@model PetCare.Web.Pages.Mascotas.DeberesModel
+@{
+    ViewData["Title"] = $"Deberes de {Model.Mascota.Nombre}";
+}
+
+<h1>Deberes de @Model.Mascota.Nombre</h1>
+
+<section class="tarjeta">
+    <h2>Deberes activos</h2>
+    @if (Model.Activos.Count == 0)
+    {
+        <p>No tiene deberes activos.</p>
+    }
+    else
+    {
+        <ul class="lista">
+            @foreach (var deber in Model.Activos)
+            {
+                <li>
+                    <span><strong>@Formato.Tipo(deber.Tipo)</strong> · @Formato.Programacion(deber)</span>
+                </li>
+            }
+        </ul>
+    }
+</section>
+
+<section class="tarjeta">
+    <h2>Dar de alta comida, paseo o medicación</h2>
+    @if (Model.Error is not null)
+    {
+        <p class="error">@Model.Error</p>
+    }
+    <form method="post" asp-page-handler="AltaProgramable" class="formulario">
+        <label>
+            Tipo
+            <select name="Tipo">
+                <option value="Comida" selected="@(Model.Tipo == TipoDeber.Comida)">Comida</option>
+                <option value="Paseo" selected="@(Model.Tipo == TipoDeber.Paseo)">Paseo</option>
+                <option value="Medicacion" selected="@(Model.Tipo == TipoDeber.Medicacion)">Medicación</option>
+            </select>
+        </label>
+        <fieldset>
+            <legend>Horario</legend>
+            <label class="opcion"><input type="radio" name="Modalidad" value="HoraFija" checked="@(Model.Modalidad == Modalidad.HoraFija)" /> A hora fija</label>
+            <label class="opcion"><input type="radio" name="Modalidad" value="CadaNHoras" checked="@(Model.Modalidad == Modalidad.CadaNHoras)" /> Cada N horas desde una hora de inicio</label>
+            <label>Hora (fija o de inicio) <input type="time" name="HoraInicio" value="@Model.HoraInicio?.ToString("HH:mm")" required /></label>
+            <label>N (solo si es cada N horas) <input name="IntervaloHoras" value="@Model.IntervaloHoras" inputmode="numeric" /></label>
+        </fieldset>
+        <fieldset>
+            <legend>Repetición</legend>
+            <label class="opcion"><input type="radio" name="Recurrencia" value="SoloHoy" checked="@(Model.Recurrencia == Recurrencia.SoloHoy)" /> Solo para hoy</label>
+            <label class="opcion"><input type="radio" name="Recurrencia" value="TodosLosDias" checked="@(Model.Recurrencia == Recurrencia.TodosLosDias)" /> Todos los días</label>
+            <label>Fecha de fin (solo medicación diaria; vacía = para siempre) <input type="date" name="HastaDia" value="@Model.HastaDia?.ToString("yyyy-MM-dd")" /></label>
+        </fieldset>
+        <button type="submit">Dar de alta</button>
+    </form>
+</section>
+
+<p><a href="/">Volver al estado del día</a></p>
