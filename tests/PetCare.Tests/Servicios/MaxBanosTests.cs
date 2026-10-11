@@ -51,4 +51,33 @@ public class MaxBanosTests : IDisposable
         Assert.True(resultado.Ok, resultado.Error);
         Assert.Equal(30, MaximoGuardado());
     }
+
+    [Fact]
+    public async Task AC_08b_AC_63f_definir_0_se_rechaza_informando_el_motivo_y_sigue_sin_maximo()
+    {
+        var resultado = await Definir(0);
+
+        Assert.Equal("El máximo de días entre baños debe ser un número entero mayor que 0.", resultado.Error);
+        Assert.Null(MaximoGuardado());
+    }
+
+    [Fact]
+    public async Task AC_07b_cambiar_el_maximo_a_un_valor_negativo_se_rechaza_y_sigue_en_20()
+    {
+        await Definir(20);
+
+        var resultado = await Definir(-5);
+
+        Assert.Equal("El máximo de días entre baños debe ser un número entero mayor que 0.", resultado.Error);
+        Assert.Equal(20, MaximoGuardado());
+    }
+
+    [Fact]
+    public async Task RF_05c_un_maximo_de_1_se_acepta()
+    {
+        var resultado = await Definir(1);
+
+        Assert.True(resultado.Ok, resultado.Error);
+        Assert.Equal(1, MaximoGuardado());
+    }
 }

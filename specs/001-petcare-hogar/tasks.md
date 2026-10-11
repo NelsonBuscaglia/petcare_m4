@@ -211,7 +211,7 @@ aparece sin marca antes de la hora y "no cumplido" después.
 - [X] T062 [P] [US5] Escribir `tests/PetCare.Tests/Servicios/MaxBanosTests.cs`: AC-08 (definir 20 sin deberes) y AC-07 (modificar a 30)
 - [X] T063 [P] [US5] Escribir `tests/PetCare.Tests/Servicios/PuntualesEstadoTests.cs`: AC-17 (baño del viernes aparece el viernes sin marca antes de las 15:00), AC-39b (turno en 3 días no aparece), AC-40 (subtipo visible), AC-45 y AC-46 ("no cumplido" de hace 3 días; al cumplirlo desaparece), AC-33 y AC-33b (paseo y baño del día juntos; cumplir el baño deja el paseo), AC-36 (cumplir un baño no pide hora), AC-39 (escenario combinado del estado del día)
 - [X] T064 [P] [US5] Escribir en `tests/PetCare.Tests/Web/AccesoMascotasTests.cs` el caso AC-05i (cambiar el máximo sin sesión → rechazo y sigue en 20)
-- [ ] T102 [US5] Agregar a `tests/PetCare.Tests/Servicios/MaxBanosTests.cs` (cambio de PRD del 2026-10-11, RF-05c): AC-08b y AC-63f (definir 0 → "El máximo de días entre baños debe ser un número entero mayor que 0." y sigue sin máximo) y AC-07b (cambiar 20 a −5 → el mismo rechazo y sigue en 20); y crear `tests/PetCare.Tests/Web/MaxBanosWebTests.cs` con un valor no entero ("2,5") en `?handler=MaxBanos` → la página muestra el mismo mensaje y el máximo no cambia
+- [X] T102 [US5] Agregar a `tests/PetCare.Tests/Servicios/MaxBanosTests.cs` (cambio de PRD del 2026-10-11, RF-05c): AC-08b y AC-63f (definir 0 → "El máximo de días entre baños debe ser un número entero mayor que 0." y sigue sin máximo) y AC-07b (cambiar 20 a −5 → el mismo rechazo y sigue en 20); y crear `tests/PetCare.Tests/Web/MaxBanosWebTests.cs` con un valor no entero ("2,5") en `?handler=MaxBanos` → la página muestra el mismo mensaje y el máximo no cambia
 
 ### Implementation for User Story 5
 
