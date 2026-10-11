@@ -20,9 +20,13 @@ public sealed class Escenario : IDisposable
     {
         Base.Fijar(Inicio, new TimeOnly(0, 0));
         Semillas.Hogar(Base);
+        Emails = new FakeEmailSender(Base.Tiempo);
     }
 
     public BaseDeDatosDePrueba Base { get; } = new();
+
+    /// <summary>Los emails que manda el procesador programado.</summary>
+    public FakeEmailSender Emails { get; }
 
     public void Dispose() => Base.Dispose();
 
@@ -30,6 +34,14 @@ public sealed class Escenario : IDisposable
     public void Fijar(DateOnly dia, int hora, int minuto = 0) => Base.Fijar(dia, new TimeOnly(hora, minuto));
 
     public int Mascota(string nombre = "Firulais") => Semillas.Mascota(Base, nombre);
+
+    /// <summary>Un cuidador del hogar, destinatario de los emails.</summary>
+    public void Cuidador(string email)
+    {
+        using var db = Base.Contexto();
+        db.Cuidadores.Add(new Cuidador { HogarId = 1, Email = email, EmailNormalizado = email.ToUpperInvariant() });
+        db.SaveChanges();
+    }
 
     public async Task<int> Programable(int mascotaId, TipoDeber tipo, string hora, int? cadaNHoras = null,
         Recurrencia recurrencia = Recurrencia.TodosLosDias, DateOnly? hasta = null)
@@ -77,8 +89,25 @@ public sealed class Escenario : IDisposable
     public async Task Ciclo()
     {
         await using var db = Base.Contexto();
-        await new ProcesadorProgramado(db, Base.Reloj, NullLogger<ProcesadorProgramado>.Instance)
+        var notificaciones = new NotificacionesService(db, Base.Reloj, Emails, NullLogger<NotificacionesService>.Instance);
+        await new ProcesadorProgramado(db, Base.Reloj, notificaciones, NullLogger<ProcesadorProgramado>.Instance)
             .EjecutarCicloAsync(CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Avanza el reloj de a 30 s, como el procesador real, con un ciclo en cada paso, desde la
+    /// hora actual hasta el día y la hora indicados inclusive.
+    /// </summary>
+    public async Task CiclosHasta(DateOnly dia, int hora, int minuto = 0)
+    {
+        var hasta = RelojHogar.AUtc(dia, new TimeOnly(hora, minuto));
+        await Ciclo();
+        while (Base.Tiempo.GetUtcNow().UtcDateTime < hasta)
+        {
+            var siguiente = Base.Tiempo.GetUtcNow().UtcDateTime.Add(ProgramadorHostedService.Intervalo);
+            Base.Tiempo.SetUtcNow(siguiente < hasta ? siguiente : hasta);
+            await Ciclo();
+        }
     }
 
     public async Task<Instancia> Instancia(int deberId, DateOnly dia, string hora)
