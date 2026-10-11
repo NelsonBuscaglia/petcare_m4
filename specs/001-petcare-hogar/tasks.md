@@ -265,7 +265,7 @@ sigue y mañana vuelven las cuatro); dar de baja un deber y ver que desaparece.
 ### Implementation for User Story 7
 
 - [X] T078 [US7] Agregar a `src/PetCare.Web/Pages/Index.cshtml(.cs)` el handler `Refresco` que devuelve `_EstadoDelDia` y el contenedor con `hx-get` y `hx-trigger="every 10s"` (R6, FR-035) — hace pasar T076
-- [ ] T079 [US7] En `src/PetCare.Web/Program.cs`, no renovar la sesión (`ShouldRenew = false`) cuando la solicitud es el handler `Refresco` (FR-005, R9) — hace pasar T077
+- [X] T079 [US7] En `src/PetCare.Web/Program.cs`, no renovar la sesión (`ShouldRenew = false`) cuando la solicitud es el handler `Refresco` (FR-005, R9) — hace pasar T077
 
 **Checkpoint**: el estado es confiable mientras otro cuidador está por actuar.
 
