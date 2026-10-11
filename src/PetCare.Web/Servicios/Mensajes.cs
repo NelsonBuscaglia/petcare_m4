@@ -12,6 +12,7 @@ public static class Mensajes
     public const string MascotaSinNombre = "El nombre de la mascota no puede estar vacío.";
     public const string MascotaRepetida = "Ya existe una mascota con ese nombre.";
     public const string IntervaloFueraDeRango = "N debe ser un número entero entre 1 y 23.";
+    public const string MaxBanosInvalido = "El máximo de días entre baños debe ser un número entero mayor que 0.";
     public const string FechaPasada = "La fecha no puede ser anterior a hoy.";
     public const string SinSubtipo = "Elegí el subtipo: veterinario, estudio, vacuna o intervención médica.";
     public const string HoraFutura = "La hora no puede ser posterior a la actual.";

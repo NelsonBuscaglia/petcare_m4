@@ -46,10 +46,13 @@ public sealed class MascotasService(PetCareDbContext db, RelojHogar reloj)
 
     /// <summary>
     /// Define o modifica el máximo de días entre baños de la mascota, sin requerir un deber
-    /// (FR-008). Recibe siempre un valor: una vez definido no se puede quitar.
+    /// (FR-008). Recibe siempre un valor: una vez definido no se puede quitar. Rechaza un valor
+    /// menor que 1 sin modificar el máximo (RF-05c).
     /// </summary>
     public async Task<Resultado> DefinirMaxDiasEntreBanosAsync(int mascotaId, int maximo)
     {
+        if (maximo < 1) return Resultado.Rechazo(Mensajes.MaxBanosInvalido);
+
         await db.Mascotas
             .Where(m => m.Id == mascotaId)
             .ExecuteUpdateAsync(s => s.SetProperty(m => m.MaxDiasEntreBanos, maximo));
