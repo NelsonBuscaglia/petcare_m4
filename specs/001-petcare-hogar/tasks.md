@@ -191,7 +191,7 @@ al cambiar de día y la medicación arrastrada.
 ### Implementation for User Story 4
 
 - [X] T058 [US4] Implementar `src/PetCare.Web/Dominio/ReglasVencimiento.cs`: `EstaVencida(instancia, tipo, ahora)` y `EstaExpirada(instancia, tipo, hoy)` según la tabla "Marcas calculadas al leer" de data-model (R3) — hace pasar T055
-- [ ] T059 [US4] Aplicar `ReglasVencimiento` en `src/PetCare.Web/Servicios/EstadoDelDiaQuery.cs`: ocultar comida y paseo expirados (FR-021), incluir medicación vigente de días anteriores (FR-022) y marcar "pendiente" (FR-019); en `ProcesadorProgramado` y `DeberesService`, fijar `GeneradaVencida` con la misma regla (FR-020) — hace pasar T056 y T057
+- [X] T059 [US4] Aplicar `ReglasVencimiento` en `src/PetCare.Web/Servicios/EstadoDelDiaQuery.cs`: ocultar comida y paseo expirados (FR-021), incluir medicación vigente de días anteriores (FR-022) y marcar "pendiente" (FR-019); en `ProcesadorProgramado` y `DeberesService`, fijar `GeneradaVencida` con la misma regla (FR-020) — hace pasar T056 y T057
 - [ ] T060 [US4] Mostrar la marca "pendiente" en `src/PetCare.Web/Pages/Shared/_EstadoDelDia.cshtml`
 
 **Checkpoint**: los olvidos se ven en pantalla sin emails.

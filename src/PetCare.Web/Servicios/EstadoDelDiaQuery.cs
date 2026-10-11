@@ -16,11 +16,20 @@ public sealed class EstadoDelDiaQuery(PetCareDbContext db, RelojHogar reloj)
             .Select(m => new { m.Id, m.Nombre })
             .ToListAsync();
 
-        // Instancias vigentes del día, de deberes no dados de baja (FR-033).
-        var instancias = await db.Instancias.AsNoTracking()
-            .Where(i => i.Estado == EstadoInstancia.Vigente && i.Dia == hoy && i.Deber!.DadoDeBajaUtc == null)
-            .Select(i => new { i.Id, i.Deber!.MascotaId, i.Deber.Tipo, i.Dia, i.Hora })
-            .ToListAsync();
+        // Instancias vigentes de hoy y de días anteriores, de deberes no dados de baja, sin las
+        // comidas y paseos expirados: así queda la medicación arrastrada (FR-021, FR-022, FR-033).
+        var ahora = reloj.AhoraUtc;
+        var instancias = (await db.Instancias.AsNoTracking()
+                .Include(i => i.Deber)
+                .Where(i => i.Estado == EstadoInstancia.Vigente && i.Dia <= hoy && i.Deber!.DadoDeBajaUtc == null)
+                .ToListAsync())
+            .Where(i => !ReglasVencimiento.EstaExpirada(i, i.Deber!.Tipo, hoy))
+            .Select(i => new
+            {
+                i.Id, i.Deber!.MascotaId, i.Deber.Tipo, i.Dia, i.Hora,
+                Marca = ReglasVencimiento.EstaVencida(i, i.Deber.Tipo, ahora) ? MarcaInstancia.Pendiente : MarcaInstancia.Ninguna,
+            })
+            .ToList();
 
         // Registros de hoy, aunque su deber se haya dado de baja (FR-013, AC-25).
         var registrosDeHoy = await db.RegistrosCumplimiento.AsNoTracking()
@@ -43,7 +52,7 @@ public sealed class EstadoDelDiaQuery(PetCareDbContext db, RelojHogar reloj)
                 instancias
                     .Where(i => i.MascotaId == mascota.Id)
                     .OrderBy(i => i.Dia).ThenBy(i => i.Hora)
-                    .Select(i => new InstanciaVista(i.Id, i.Tipo, i.Dia, i.Hora))
+                    .Select(i => new InstanciaVista(i.Id, i.Tipo, i.Dia, i.Hora, i.Marca))
                     .ToList(),
                 resumen,
                 deHoy

@@ -11,9 +11,6 @@ namespace PetCare.Web.Servicios;
 /// </summary>
 public static class InstanciasDelDia
 {
-    /// <summary>Tolerancia antes de que una comida, paseo o medicación quede vencida (FR-019).</summary>
-    private static readonly TimeSpan Tolerancia = TimeSpan.FromMinutes(15);
-
     /// <summary>Agrega al contexto, sin guardar, las instancias faltantes del deber en el día.</summary>
     public static async Task AgregarFaltantesAsync(PetCareDbContext db, Deber deber, DateOnly dia, DateTime ahoraUtc)
     {
@@ -29,7 +26,7 @@ public static class InstanciasDelDia
             var programadaUtc = RelojHogar.AUtc(diaInstancia, hora);
             if (existentes.Contains(programadaUtc)) continue;
 
-            db.Instancias.Add(new Instancia
+            var instancia = new Instancia
             {
                 Deber = deber,
                 Dia = diaInstancia,
@@ -37,9 +34,10 @@ public static class InstanciasDelDia
                 ProgramadaUtc = programadaUtc,
                 Estado = EstadoInstancia.Vigente,
                 GeneradaUtc = ahoraUtc,
-                // Ya vencida al generarse: no dispara email de vencimiento (FR-018, FR-037).
-                GeneradaVencida = ahoraUtc >= programadaUtc + Tolerancia,
-            });
+            };
+            // Ya vencida al generarse: no dispara email de vencimiento (FR-018, FR-020, FR-037).
+            instancia.GeneradaVencida = ReglasVencimiento.EstaVencida(instancia, deber.Tipo, ahoraUtc);
+            db.Instancias.Add(instancia);
         }
     }
 }

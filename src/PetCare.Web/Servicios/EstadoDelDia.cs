@@ -20,7 +20,10 @@ public sealed record SeccionMascota(
     public bool SinTareasPendientes => Instancias.Count == 0;
 }
 
-public sealed record InstanciaVista(int Id, TipoDeber Tipo, DateOnly Dia, TimeOnly Hora);
+public sealed record InstanciaVista(int Id, TipoDeber Tipo, DateOnly Dia, TimeOnly Hora, MarcaInstancia Marca);
+
+/// <summary>Marca calculada al leer (R3): "pendiente" es una comida, paseo o medicación vencida (FR-019).</summary>
+public enum MarcaInstancia { Ninguna, Pendiente }
 
 /// <summary>Paseos de hoy y último cumplimiento de comida y de paseo, o null si no hay (FR-034).</summary>
 public sealed record ResumenMascota(int PaseosDeHoy, Momento? UltimaComida, Momento? UltimoPaseo);
