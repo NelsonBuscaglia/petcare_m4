@@ -185,7 +185,7 @@ al cambiar de día y la medicación arrastrada.
 ### Tests for User Story 4 ⚠️
 
 - [X] T055 [P] [US4] Escribir `tests/PetCare.Tests/Dominio/ReglasVencimientoTests.cs`: programables vencen en `ahora ≥ programada + 15 min` (AC-29 a las 09:10 no, AC-29b a las 09:15 sí, AC-44), comida y paseo expiran con `Dia < hoy` (AC-30), medicación no expira, y la evaluación es en hora del hogar (AC-61: 05:15 UTC−3 no está pendiente una comida de las 08:00)
-- [ ] T056 [P] [US4] Escribir `tests/PetCare.Tests/Servicios/VencimientosEstadoTests.cs`: AC-31 y AC-31b (medicación de ayer "pendiente" junto a la de hoy), AC-13c y AC-19e (medicación terminada el día 10 con dosis sin cumplir sigue pendiente y el deber activo el día 11), AC-14 (alta a las 10:30 de un paseo de las 10:00 → "pendiente"), AC-28 y AC-28b (instancias del nuevo día recién después de 00:00 UTC−3), AC-38 (al eliminar el registro erróneo, la instancia vuelve "pendiente")
+- [X] T056 [P] [US4] Escribir `tests/PetCare.Tests/Servicios/VencimientosEstadoTests.cs`: AC-31 y AC-31b (medicación de ayer "pendiente" junto a la de hoy), AC-13c y AC-19e (medicación terminada el día 10 con dosis sin cumplir sigue pendiente y el deber activo el día 11), AC-14 (alta a las 10:30 de un paseo de las 10:00 → "pendiente"), AC-28 y AC-28b (instancias del nuevo día recién después de 00:00 UTC−3), AC-38 (al eliminar el registro erróneo, la instancia vuelve "pendiente")
 - [ ] T057 [P] [US4] Escribir `tests/PetCare.Tests/Programado/ReinicioTests.cs`: AC-28c (sin ciclos entre las 23:00 y las 10:00, el primer ciclo a las 10:00 genera la instancia de las 08:00 con `GeneradaVencida = true` y marca "pendiente")
 
 ### Implementation for User Story 4
