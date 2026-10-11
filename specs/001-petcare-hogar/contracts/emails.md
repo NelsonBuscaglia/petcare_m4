@@ -6,7 +6,8 @@ del envío. Idioma: español. Formato: texto plano. Horas en hora del hogar (UTC
 
 ## Vencimiento (FR-036, FR-039, FR-054)
 
-- **Asunto**: `PetCare: {Mascota} – {Tipo} vencido`
+- **Asunto**: `PetCare: {Mascota} – {Tipo} vencido` o `vencida`, según el género del tipo: "vencida"
+  para comida, medicación y visita/estudio; "vencido" para paseo y baño.
 - **Cuerpo, campos obligatorios**: nombre de la mascota; tipo de deber (y subtipo si es
   visita/estudio); fecha y hora de la instancia.
 - **Disparo**: la instancia pasa a vencida (R7); nunca más de una `Aceptada` por instancia.
