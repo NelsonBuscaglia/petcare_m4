@@ -349,6 +349,12 @@ tardar a las 07:05; ninguno en los casos excluidos.
 - **US8 (P3)**: US3, US4, US5 y US6 (vencimientos, episodios, bajas).
 - **US9 (P3)**: US5 (máximo de días, baños) y la infraestructura de emails de US8.
 
+### Within Foundational
+
+- T018 necesita que `dotnet ef` pueda crear `PetCareDbContext`, y eso lo registra T019 en
+  `Program.cs`; T009 necesita la migración de T018 y es donde T018 verifica el esquema. Orden:
+  **T019 → T018 → T009**.
+
 ### Within Each User Story
 
 - Tests primero y fallando (Principio I); después dominio, servicios y páginas.
