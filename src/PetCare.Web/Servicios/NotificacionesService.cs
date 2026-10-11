@@ -91,6 +91,79 @@ public sealed class NotificacionesService(
     }
 
     /// <summary>
+    /// Intenta enviar cada notificación pendiente a todos los cuidadores del hogar. Solo cuenta
+    /// como enviada si el servicio la acepta; si falla, se reintenta en el próximo ciclo mientras
+    /// dure la ventana de 5 minutos desde la condición, y al vencer queda perdida (FR-041).
+    /// </summary>
+    public async Task EnviarPendientesAsync(CancellationToken ct)
+    {
+        var pendientes = await db.Notificaciones
+            .Where(n => n.Estado == EstadoNotificacion.Pendiente)
+            .OrderBy(n => n.CondicionUtc)
+            .ToListAsync(ct);
+        if (pendientes.Count == 0) return;
+
+        var destinatarios = await db.Cuidadores.AsNoTracking().OrderBy(c => c.Id).Select(c => c.Email).ToListAsync(ct);
+
+        foreach (var notificacion in pendientes)
+        {
+            // La hora se relee en cada vuelta: un intento sin respuesta consume tiempo.
+            var ahora = reloj.AhoraUtc;
+            if (ahora > notificacion.CondicionUtc + Ventana)
+            {
+                notificacion.Estado = EstadoNotificacion.Perdida;
+                await db.SaveChangesAsync(ct);
+                continue;
+            }
+
+            // Si la condición dejó de cumplirse (se cumplió o se dio de baja), no se envía.
+            var contenido = await ContenidoAsync(notificacion, ct);
+            if (contenido is null || destinatarios.Count == 0) continue;
+
+            notificacion.Intentos++;
+            notificacion.UltimoIntentoUtc = ahora;
+            try
+            {
+                await emails.EnviarAsync(destinatarios, contenido.Asunto, contenido.Cuerpo, ct);
+                notificacion.Estado = EstadoNotificacion.Aceptada;
+                notificacion.AceptadaUtc = reloj.AhoraUtc;
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException || !ct.IsCancellationRequested)
+            {
+                logger.LogWarning(ex, "El servicio de email no aceptó la notificación {Clave} (intento {Intento}).",
+                    notificacion.Clave, notificacion.Intentos);
+            }
+
+            await db.SaveChangesAsync(ct);
+        }
+    }
+
+    /// <summary>El contenido del email, o null si su condición ya no se cumple.</summary>
+    private async Task<ContenidoEmail?> ContenidoAsync(Notificacion notificacion, CancellationToken ct)
+    {
+        switch (notificacion.Tipo)
+        {
+            case TipoNotificacion.Vencimiento:
+                var instancia = await db.Instancias.AsNoTracking()
+                    .Include(i => i.Deber!).ThenInclude(d => d.Mascota)
+                    .SingleAsync(i => i.Id == notificacion.InstanciaId, ct);
+                if (instancia.Estado != EstadoInstancia.Vigente || instancia.Deber!.DadoDeBajaUtc is not null) return null;
+                return PlantillasEmail.Vencimiento(
+                    instancia.Deber.Mascota!.Nombre, instancia.Deber.Tipo, instancia.Deber.Subtipo, instancia.Dia, instancia.Hora);
+
+            case TipoNotificacion.Recordatorio:
+                var deber = await db.Deberes.AsNoTracking()
+                    .Include(d => d.Mascota)
+                    .SingleAsync(d => d.Id == notificacion.DeberId, ct);
+                if (deber.DadoDeBajaUtc is not null) return null;
+                return PlantillasEmail.Recordatorio(deber.Mascota!.Nombre, deber.Tipo, deber.Subtipo, deber.Dia!.Value, deber.Hora!.Value);
+
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>
     /// Agrega la notificación; si la condición se detecta cuando ya pasó la ventana (servidor
     /// caído), nace perdida y no se envía (Fuera de Alcance del PRD).
     /// </summary>
