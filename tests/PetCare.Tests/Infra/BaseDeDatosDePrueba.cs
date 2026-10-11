@@ -20,6 +20,9 @@ public sealed class BaseDeDatosDePrueba : IDisposable
         db.Database.Migrate();
     }
 
+    /// <summary>Conexión abierta, para que la app de los tests web use esta misma base.</summary>
+    public SqliteConnection Conexion => _conexion;
+
     /// <summary>Un contexto nuevo sobre la misma base, como en una solicitud distinta.</summary>
     public PetCareDbContext Contexto() =>
         new(new DbContextOptionsBuilder<PetCareDbContext>().UseSqlite(_conexion).Options);
