@@ -8,11 +8,15 @@ namespace PetCare.Web.Servicios;
 public sealed class MascotasService(PetCareDbContext db, RelojHogar reloj)
 {
     /// <summary>
-    /// Registra una mascota del hogar; rechaza un nombre que ya tiene otra mascota, sin
-    /// distinguir mayúsculas (FR-007). Devuelve el id de la mascota.
+    /// Registra una mascota del hogar con el nombre sin espacios en los extremos (RF-04d);
+    /// rechaza un nombre vacío (RF-04c) o uno que ya tiene otra mascota, sin distinguir
+    /// mayúsculas (FR-007). Devuelve el id de la mascota.
     /// </summary>
     public async Task<Resultado<int>> RegistrarAsync(string nombre)
     {
+        nombre = nombre.Trim();
+        if (nombre.Length == 0) return Resultado<int>.Rechazo(Mensajes.MascotaSinNombre);
+
         var hogarId = (await db.Hogares.AsNoTracking().SingleAsync()).Id;
         var nombreNormalizado = Normalizar(nombre);
 
