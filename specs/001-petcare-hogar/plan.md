@@ -82,6 +82,7 @@ PetCare.sln
 .config/dotnet-tools.json            # dotnet-ef
 src/PetCare.Web/
 ├── Program.cs                       # DI, cookie auth, TimeProvider, hosted service
+├── Infra/                           # EventosCookie (renovación de sesión, 401 HTMX, motivo)
 ├── Dominio/                         # reglas puras: RelojHogar, GeneradorInstancias,
 │                                    # ReglasVencimiento, CodigoHogar, PlantillasEmail, enums
 ├── Datos/                           # PetCareDbContext, configuraciones, Migrations/

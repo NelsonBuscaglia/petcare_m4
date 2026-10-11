@@ -130,11 +130,16 @@ delicados: tiempo, alarmas, concurrencia, sesión y actualización automática.
   `SlidingExpiration = false`; en `OnValidatePrincipal` se fuerza `ShouldRenew = true` en toda
   solicitud que no sea el refresco automático (identificado por el handler `Refresco`), así el
   plazo se cuenta desde la última solicitud real (RF-02c). La cookie usa el `TimeProvider`
-  inyectado (`CookieAuthenticationOptions.TimeProvider`) para poder testear el vencimiento.
+  inyectado (`CookieAuthenticationOptions.TimeProvider`) para poder testear el vencimiento. Al
+  iniciar sesión se emite la cookie con `AuthenticationProperties.IsPersistent = true`, para que
+  sobreviva al cierre del navegador durante los 30 días (FR-005).
 - Contraseñas con `PasswordHasher<Cuidador>`; mínimo 8 caracteres (FR-047). Emails comparados
   por una columna normalizada (`ToUpperInvariant`) con índice único.
 - Toda página exige usuario autenticado salvo registro e inicio de sesión. Una solicitud HTMX
-  sin sesión recibe 401 sin datos y el encabezado `HX-Redirect` al login (AC-05, AC-04e).
+  sin sesión recibe 401 sin datos y el encabezado `HX-Redirect` al login (AC-05, AC-04e); en
+  ambos casos el login recibe `motivo=sin-sesion` y muestra "Iniciá sesión para continuar."
+  (FR-051, AC-05k). Estos eventos viven en `Infra/EventosCookie.cs` y se implementan después de
+  sus tests (Principio I).
 - **Alternatives considered**: `SlidingExpiration = true` (solo renueva pasada la mitad del
   plazo, no cumple "30 días desde la última solicitud", y renovaría con el polling).
 

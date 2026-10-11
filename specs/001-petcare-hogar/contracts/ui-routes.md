@@ -6,8 +6,10 @@ que devuelven parciales. No hay API JSON pública.
 ## Reglas comunes
 
 - Todas las rutas exigen sesión salvo `/Cuenta/Registro` y `/Cuenta/Login`. Sin sesión:
-  navegación normal → redirección al login; solicitud HTMX (`HX-Request: true`) → `401` sin
-  cuerpo de datos y encabezado `HX-Redirect: /Cuenta/Login` (FR-006, AC-05, AC-04e).
+  navegación normal → redirección a `/Cuenta/Login?motivo=sin-sesion`; solicitud HTMX
+  (`HX-Request: true`) → `401` sin cuerpo de datos y encabezado
+  `HX-Redirect: /Cuenta/Login?motivo=sin-sesion` (FR-006, AC-05, AC-04e). Con
+  `motivo=sin-sesion`, el login muestra "Iniciá sesión para continuar." (FR-051, AC-05k).
 - Toda solicitud que modifica datos es `POST` con token antiforgery (enviado por HTMX en
   `hx-headers`).
 - Todo rechazo de validación vuelve a mostrar el formulario o parcial con el **motivo
@@ -53,10 +55,11 @@ en el parcial con la hora propuesta. Dos toques en el caso por defecto.
 
 | Situación | Mensaje |
 |---|---|
-| Código de hogar incorrecto o faltante | "El código de hogar es incorrecto." / "Para sumarte al hogar necesitás su código." |
+| Código de hogar incorrecto o faltante | "El código de hogar es incorrecto." / "El hogar ya existe: para sumarte necesitás su código." |
 | Email ya registrado (con código correcto) | "Ese email ya está registrado." |
 | Contraseña corta | "La contraseña debe tener al menos 8 caracteres." |
 | Login fallido | "El email o la contraseña son incorrectos." |
+| Sin sesión (o sesión vencida) | "Iniciá sesión para continuar." (en la pantalla de login) |
 | Nombre de mascota repetido | "Ya existe una mascota con ese nombre." |
 | N fuera de rango | "N debe ser un número entero entre 1 y 23." |
 | Fecha pasada | "La fecha no puede ser anterior a hoy." |
