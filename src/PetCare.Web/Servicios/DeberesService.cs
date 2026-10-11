@@ -15,6 +15,9 @@ public sealed record AltaProgramable(
     Recurrencia Recurrencia,
     DateOnly? HastaDia);
 
+/// <summary>Datos del alta de un baño o visita/estudio (contracts/ui-routes.md, AltaPuntual).</summary>
+public sealed record AltaPuntual(int MascotaId, TipoDeber Tipo, SubtipoVisita? Subtipo, DateOnly Dia, TimeOnly Hora);
+
 public sealed class DeberesService(PetCareDbContext db, RelojHogar reloj)
 {
     /// <summary>
@@ -50,6 +53,48 @@ public sealed class DeberesService(PetCareDbContext db, RelojHogar reloj)
         await InstanciasDelDia.AgregarFaltantesAsync(db, deber, hoy, reloj.AhoraUtc);
 
         // Deber e instancias se guardan juntos.
+        await db.SaveChangesAsync();
+        return Resultado<int>.Exito(deber.Id);
+    }
+
+    /// <summary>
+    /// Da de alta un baño o visita/estudio en una fecha y hora exactas, con su única instancia
+    /// (FR-011). Devuelve el id del deber.
+    /// </summary>
+    public async Task<Resultado<int>> AltaPuntualAsync(AltaPuntual alta)
+    {
+        // No antes de hoy; hoy con la hora ya pasada se acepta (RF-10b, RF-10c).
+        if (alta.Dia < reloj.Hoy) return Resultado<int>.Rechazo(Mensajes.FechaPasada);
+
+        // El subtipo es obligatorio en visita/estudio y no aplica al baño (RF-11, RF-11d).
+        var subtipo = alta.Tipo == TipoDeber.VisitaEstudio ? alta.Subtipo : null;
+        if (alta.Tipo == TipoDeber.VisitaEstudio && subtipo is null) return Resultado<int>.Rechazo(Mensajes.SinSubtipo);
+
+        var ahora = reloj.AhoraUtc;
+        var programadaUtc = RelojHogar.AUtc(alta.Dia, alta.Hora);
+        var deber = new Deber
+        {
+            MascotaId = alta.MascotaId,
+            Tipo = alta.Tipo,
+            Subtipo = subtipo,
+            Dia = alta.Dia,
+            Hora = alta.Hora,
+            CreadoUtc = ahora,
+            CreadoDia = reloj.Hoy,
+        };
+        db.Deberes.Add(deber);
+        db.Instancias.Add(new Instancia
+        {
+            Deber = deber,
+            Dia = alta.Dia,
+            Hora = alta.Hora,
+            ProgramadaUtc = programadaUtc,
+            Estado = EstadoInstancia.Vigente,
+            GeneradaUtc = ahora,
+            // Hoy con la hora ya pasada: nace "no cumplido" y no dispara email (FR-023, FR-037, AC-17d).
+            GeneradaVencida = ahora > programadaUtc,
+        });
+
         await db.SaveChangesAsync();
         return Resultado<int>.Exito(deber.Id);
     }
