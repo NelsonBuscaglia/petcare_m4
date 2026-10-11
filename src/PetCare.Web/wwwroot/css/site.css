@@ -102,3 +102,6 @@ button.enlace { min-height: 0; padding: 0; background: none; text-decoration: un
 /* Opciones de radio en una fila: el control a la izquierda del texto */
 label.opcion { flex-direction: row; align-items: center; gap: .5rem; font-weight: 400; }
 label.opcion input { width: auto; }
+
+/* Sección de cada mascota en el estado del día */
+.mascota > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem; }

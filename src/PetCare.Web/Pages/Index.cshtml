@@ -5,10 +5,12 @@
 }
 
 <h1>Estado del día</h1>
-<div class="tarjeta">
-    <p><a href="/Hogar/Codigo">Ver el código de hogar</a></p>
-    <form method="post" action="/Cuenta/Logout">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="secundario">Cerrar sesión</button>
-    </form>
+
+<div id="estado-del-dia">
+    <partial name="_EstadoDelDia" model="Model.Estado" />
 </div>
+
+@if (!Model.Estado.SinMascotas)
+{
+    <p><a href="/Mascotas/Nueva">Registrar otra mascota</a></p>
+}
