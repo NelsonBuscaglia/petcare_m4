@@ -8,12 +8,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Time.Testing;
 using PetCare.Web.Datos;
 using PetCare.Web.Dominio;
+using PetCare.Web.Programado;
 
 namespace PetCare.Tests.Infra;
 
 /// <summary>
 /// La app completa para tests web: el <see cref="TimeProvider"/> es un
-/// <see cref="FakeTimeProvider"/> y la base es una <see cref="BaseDeDatosDePrueba"/> en memoria.
+/// <see cref="FakeTimeProvider"/>, la base es una <see cref="BaseDeDatosDePrueba"/> en memoria y
+/// el procesador en segundo plano está apagado.
 /// </summary>
 public sealed class PetCareWebFactory : WebApplicationFactory<Program>
 {
@@ -38,6 +40,10 @@ public sealed class PetCareWebFactory : WebApplicationFactory<Program>
             services.RemoveAll<DbContextOptions<PetCareDbContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<PetCareDbContext>>();
             services.AddDbContext<PetCareDbContext>(options => options.UseSqlite(Base.Conexion));
+
+            // El procesador en segundo plano no corre solo: los tests ejecutan sus ciclos.
+            var programador = services.Single(s => s.ImplementationType == typeof(ProgramadorHostedService));
+            services.Remove(programador);
         });
     }
 
