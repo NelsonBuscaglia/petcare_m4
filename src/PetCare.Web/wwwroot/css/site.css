@@ -105,3 +105,8 @@ label.opcion input { width: auto; }
 
 /* Sección de cada mascota en el estado del día */
 .mascota > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem; }
+
+/* Formulario para confirmar un cumplimiento, dentro de la fila de la instancia */
+.form-cumplir { display: flex; flex-wrap: wrap; align-items: end; gap: .5rem; width: 100%; }
+.form-cumplir label { flex: 1 1 8rem; }
+a.boton.secundario { color: #1f2328; background: #e6e9ed; }

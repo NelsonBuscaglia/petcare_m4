@@ -11,18 +11,5 @@
 
 @foreach (var seccion in Model.Mascotas)
 {
-    <section class="tarjeta mascota" id="mascota-@seccion.MascotaId">
-        <header>
-            <h2>@seccion.Nombre</h2>
-            <a href="/Mascotas/@seccion.MascotaId/Deberes">Deberes</a>
-        </header>
-        <ul class="lista">
-            @foreach (var instancia in seccion.Instancias)
-            {
-                <li>
-                    <span><strong>@Formato.Hora(instancia.Hora)</strong> · @Formato.Tipo(instancia.Tipo)</span>
-                </li>
-            }
-        </ul>
-    </section>
+    <partial name="_SeccionMascota" model="new PetCare.Web.Pages.SeccionMascotaVista(seccion)" />
 }

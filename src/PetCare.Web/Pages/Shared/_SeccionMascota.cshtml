@@ -1,0 +1,23 @@
+@model PetCare.Web.Pages.SeccionMascotaVista
+@{
+    var seccion = Model.Seccion;
+}
+
+<section class="tarjeta mascota" id="mascota-@seccion.MascotaId">
+    <header>
+        <h2>@seccion.Nombre</h2>
+        <a href="/Mascotas/@seccion.MascotaId/Deberes">Deberes</a>
+    </header>
+    @if (Model.Error is not null)
+    {
+        <p class="error">@Model.Error</p>
+    }
+    <ul class="lista">
+        @foreach (var instancia in seccion.Instancias)
+        {
+            <li id="instancia-@instancia.Id">
+                <span><strong>@Formato.Hora(instancia.Hora)</strong> · @Formato.Tipo(instancia.Tipo)</span>
+            </li>
+        }
+    </ul>
+</section>

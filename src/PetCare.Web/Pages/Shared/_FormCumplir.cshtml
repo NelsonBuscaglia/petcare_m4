@@ -1,0 +1,15 @@
+@model PetCare.Web.Pages.FormCumplirVista
+
+@* Segundo toque del cumplimiento: confirmar con la hora propuesta (FR-025, FR-043). *@
+<form class="form-cumplir" hx-post="/?handler=Cumplir" hx-target="#mascota-@Model.MascotaId" hx-swap="outerHTML">
+    <input type="hidden" name="instanciaId" value="@Model.InstanciaId" />
+    <span><strong>@Formato.Hora(Model.Hora)</strong> · @Formato.Tipo(Model.Tipo)</span>
+    @if (Model.HoraPropuesta is { } hora)
+    {
+        <label>Hora real <input type="time" name="Hora" value="@Formato.Hora(hora)" /></label>
+    }
+    <div class="acciones">
+        <button type="submit">Confirmar</button>
+        <a class="boton secundario" href="/">Cancelar</a>
+    </div>
+</form>
