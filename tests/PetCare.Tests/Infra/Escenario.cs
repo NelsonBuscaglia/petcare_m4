@@ -61,6 +61,18 @@ public sealed class Escenario : IDisposable
         return await new DeberesService(db, Base.Reloj).DeberesActivosAsync(mascotaId);
     }
 
+    public async Task DarDeBajaDeber(int deberId)
+    {
+        await using var db = Base.Contexto();
+        await new DeberesService(db, Base.Reloj).DarDeBajaAsync(deberId);
+    }
+
+    public async Task<Resultado> DarDeBajaInstancia(int instanciaId)
+    {
+        await using var db = Base.Contexto();
+        return await new BajasInstanciaService(db, Base.Reloj).DarDeBajaAsync(instanciaId);
+    }
+
     /// <summary>Un ciclo del procesador programado a la hora actual del reloj.</summary>
     public async Task Ciclo()
     {
