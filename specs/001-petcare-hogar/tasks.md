@@ -242,7 +242,7 @@ sigue y mañana vuelven las cuatro); dar de baja un deber y ver que desaparece.
 
 ### Implementation for User Story 6
 
-- [ ] T073 [US6] Agregar a `src/PetCare.Web/Servicios/DeberesService.cs` `DarDeBaja(deberId)`: fija `DadoDeBajaUtc` y pasa a `DadaDeBaja` las instancias `Vigente` en una actualización condicional; conserva registros (FR-013)
+- [X] T073 [US6] Agregar a `src/PetCare.Web/Servicios/DeberesService.cs` `DarDeBaja(deberId)`: fija `DadoDeBajaUtc` y pasa a `DadaDeBaja` las instancias `Vigente` en una actualización condicional; conserva registros (FR-013)
 - [ ] T074 [US6] Agregar a `src/PetCare.Web/Dominio/Entidades/Deber.cs` la propiedad calculada `EsDeInstanciaUnica` ("puntual, o programable `HoraFija` + `SoloHoy`") y crear `src/PetCare.Web/Servicios/BajasInstanciaService.cs` con `DarDeBaja(instanciaId)`: `UPDATE ... WHERE Estado = Vigente`; si afectó 0, devolver "ya fue cumplida" o "ya fue dada de baja" (FR-045); si el deber es de instancia única, darlo de baja (FR-016); si no, conservar el deber (FR-015) — hace pasar T070 y T071
 - [ ] T075 [US6] Agregar el handler `Baja` en `src/PetCare.Web/Pages/Mascotas/Deberes.cshtml.cs` y `BajaInstancia` en `src/PetCare.Web/Pages/Index.cshtml.cs`, con botones en sus vistas — hace pasar T072
 

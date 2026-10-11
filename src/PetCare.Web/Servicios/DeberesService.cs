@@ -100,6 +100,25 @@ public sealed class DeberesService(PetCareDbContext db, RelojHogar reloj)
         return Resultado<int>.Exito(deber.Id);
     }
 
+    /// <summary>
+    /// Baja definitiva de un deber: deja de generar instancias y da de baja las que siguen
+    /// vigentes, conservando las cumplidas y sus registros (FR-013). Dar de baja un deber que ya
+    /// estaba dado de baja no cambia nada.
+    /// </summary>
+    public async Task<Resultado> DarDeBajaAsync(int deberId)
+    {
+        await using var transaccion = await db.Database.BeginTransactionAsync();
+        var ahora = reloj.AhoraUtc;
+        await db.Deberes
+            .Where(d => d.Id == deberId && d.DadoDeBajaUtc == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(d => d.DadoDeBajaUtc, ahora));
+        await db.Instancias
+            .Where(i => i.DeberId == deberId && i.Estado == EstadoInstancia.Vigente)
+            .ExecuteUpdateAsync(s => s.SetProperty(i => i.Estado, EstadoInstancia.DadaDeBaja));
+        await transaccion.CommitAsync();
+        return Resultado.Exito;
+    }
+
     /// <summary>Deberes activos de la mascota, en el orden en que se dieron de alta (FR-012).</summary>
     public async Task<IReadOnlyList<Deber>> DeberesActivosAsync(int mascotaId)
     {
