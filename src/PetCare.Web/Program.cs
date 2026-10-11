@@ -21,6 +21,7 @@ builder.Services.AddDbContext<PetCareDbContext>(options =>
 builder.Services.AddScoped<RegistroService>();
 builder.Services.AddScoped<MascotasService>();
 builder.Services.AddScoped<DeberesService>();
+builder.Services.AddScoped<CumplimientosService>();
 builder.Services.AddScoped<EstadoDelDiaQuery>();
 
 // Procesador en segundo plano: genera instancias sin depender de usuarios conectados (R5).
